@@ -1,922 +1,1073 @@
 [
     {
-        "ns": "None",
-        "id": 24,
-        "name": "アイリス",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 2,
-        "name": "アムレート",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 23,
-        "name": "イリア",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 76,
-        "name": "エイル",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 70,
-        "name": "ギルウィアル",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 108,
-        "name": "コルディ(団長)",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 54,
-        "name": "シヴィ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 62,
-        "name": "ステラ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 87,
-        "name": "セルリア",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 45,
-        "name": "ソーニャ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 1,
-        "name": "ソルティーナ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 68,
-        "name": "トロポン(聖夜)",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 83,
-        "name": "ニーナ(夏)",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 66,
-        "name": "フェーネ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsBlue",
         "id": 3,
         "name": "フェンリル",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/3",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "3",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsBlue",
         "id": 4,
         "name": "フローレンス",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/4",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "4",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 116,
-        "name": "マーリン(藍)",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 81,
-        "name": "ミナシュマリ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 5,
-        "name": "モーザ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 35,
-        "name": "モニカ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsBlue",
         "id": 91,
         "name": "ユリーカ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/91",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "91",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsBlue",
         "id": 72,
         "name": "リズ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/72",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "72",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsBlue",
+        "id": 66,
+        "name": "フェーネ",
+        "contentURL": "https://altema.jp/mememori/chara/66",
+        "iconURL": "",
+        "idAsText": "66",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 2,
+        "name": "アムレート",
+        "contentURL": "https://altema.jp/mememori/chara/2",
+        "iconURL": "",
+        "idAsText": "2",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 54,
+        "name": "シヴィ",
+        "contentURL": "https://altema.jp/mememori/chara/54",
+        "iconURL": "",
+        "idAsText": "54",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 119,
+        "name": "エヴリン",
+        "contentURL": "https://altema.jp/mememori/chara/119",
+        "iconURL": "",
+        "idAsText": "119",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 116,
+        "name": "マーリン(藍)",
+        "contentURL": "https://altema.jp/mememori/chara/116",
+        "iconURL": "",
+        "idAsText": "116",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 108,
+        "name": "コルディ(団長)",
+        "contentURL": "https://altema.jp/mememori/chara/108",
+        "iconURL": "",
+        "idAsText": "108",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 81,
+        "name": "ミナシュマリ",
+        "contentURL": "https://altema.jp/mememori/chara/81",
+        "iconURL": "",
+        "idAsText": "81",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 87,
+        "name": "セルリア",
+        "contentURL": "https://altema.jp/mememori/chara/87",
+        "iconURL": "",
+        "idAsText": "87",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 83,
+        "name": "ニーナ(夏)",
+        "contentURL": "https://altema.jp/mememori/chara/83",
+        "iconURL": "",
+        "idAsText": "83",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 76,
+        "name": "エイル",
+        "contentURL": "https://altema.jp/mememori/chara/76",
+        "iconURL": "",
+        "idAsText": "76",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 70,
+        "name": "ギルウィアル",
+        "contentURL": "https://altema.jp/mememori/chara/70",
+        "iconURL": "",
+        "idAsText": "70",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 68,
+        "name": "トロポン(聖夜)",
+        "contentURL": "https://altema.jp/mememori/chara/68",
+        "iconURL": "",
+        "idAsText": "68",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 62,
+        "name": "ステラ",
+        "contentURL": "https://altema.jp/mememori/chara/62",
+        "iconURL": "",
+        "idAsText": "62",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 45,
+        "name": "ソーニャ",
+        "contentURL": "https://altema.jp/mememori/chara/45",
+        "iconURL": "",
+        "idAsText": "45",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 1,
+        "name": "ソルティーナ",
+        "contentURL": "https://altema.jp/mememori/chara/1",
+        "iconURL": "",
+        "idAsText": "1",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 5,
+        "name": "モーザ",
+        "contentURL": "https://altema.jp/mememori/chara/5",
+        "iconURL": "",
+        "idAsText": "5",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 23,
+        "name": "イリア",
+        "contentURL": "https://altema.jp/mememori/chara/23",
+        "iconURL": "",
+        "idAsText": "23",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
         "id": 25,
         "name": "ロキ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/25",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "25",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsBlue",
+        "id": 24,
+        "name": "アイリス",
+        "contentURL": "https://altema.jp/mememori/chara/24",
+        "iconURL": "",
+        "idAsText": "24",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlue",
+        "id": 35,
+        "name": "モニカ",
+        "contentURL": "https://altema.jp/mememori/chara/35",
+        "iconURL": "",
+        "idAsText": "35",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
         "id": 55,
         "name": "アーティ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/55",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "55",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 115,
-        "name": "アイシェ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 8,
-        "name": "アモール",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 26,
-        "name": "アリアンロッド",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 95,
-        "name": "アルトリア",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 60,
-        "name": "コルディ(浴衣)",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 6,
-        "name": "サブリナ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsRed",
         "id": 97,
         "name": "シズ(紅)",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/97",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "97",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": null,
-        "name": "シフォン",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": "shifon"
-    },
-    {
-        "ns": "None",
-        "id": 36,
-        "name": "シャーロット",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 47,
-        "name": "ソフィア",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 92,
-        "name": "ソルティーナ(聖夜)",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 10,
-        "name": "ディアン",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 27,
-        "name": "テオドラ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 105,
-        "name": "フラック",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 63,
-        "name": "プリシラ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 7,
-        "name": "フレイシア",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 28,
-        "name": "ペトラ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 40,
-        "name": "ベル",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsRed",
         "id": 73,
         "name": "マチルダ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/73",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "73",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 77,
-        "name": "モルガナ",
-        "contentURL": "",
+        "ns": "CnsRed",
+        "id": 60,
+        "name": "コルディ(浴衣)",
+        "contentURL": "https://altema.jp/mememori/chara/60",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "60",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsRed",
+        "id": 40,
+        "name": "ベル",
+        "contentURL": "https://altema.jp/mememori/chara/40",
+        "iconURL": "",
+        "idAsText": "40",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
+        "id": 115,
+        "name": "アイシェ",
+        "contentURL": "https://altema.jp/mememori/chara/115",
+        "iconURL": "",
+        "idAsText": "115",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
         "id": 112,
         "name": "リーベ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/112",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "112",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 9,
-        "name": "リーン",
-        "contentURL": "",
+        "ns": "CnsRed",
+        "id": 105,
+        "name": "フラック",
+        "contentURL": "https://altema.jp/mememori/chara/105",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "105",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsRed",
         "id": 103,
         "name": "ルシール",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/103",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "103",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 101,
-        "name": "D.D.",
-        "contentURL": "",
+        "ns": "CnsRed",
+        "id": 95,
+        "name": "アルトリア",
+        "contentURL": "https://altema.jp/mememori/chara/95",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "95",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 11,
-        "name": "アイビー",
-        "contentURL": "",
+        "ns": "CnsRed",
+        "id": 92,
+        "name": "ソルティーナ(聖夜)",
+        "contentURL": "https://altema.jp/mememori/chara/92",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "92",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 80,
-        "name": "アレクサンドラ",
-        "contentURL": "",
+        "ns": "CnsRed",
+        "id": 77,
+        "name": "モルガナ",
+        "contentURL": "https://altema.jp/mememori/chara/77",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "77",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 71,
-        "name": "クラウディア",
-        "contentURL": "",
+        "ns": "CnsRed",
+        "id": 63,
+        "name": "プリシラ",
+        "contentURL": "https://altema.jp/mememori/chara/63",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "63",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsRed",
+        "id": null,
+        "name": "シフォン",
+        "contentURL": "https://altema.jp/mememori/shifon",
+        "iconURL": "",
+        "idAsText": "shifon",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
+        "id": 8,
+        "name": "アモール",
+        "contentURL": "https://altema.jp/mememori/chara/8",
+        "iconURL": "",
+        "idAsText": "8",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
+        "id": 47,
+        "name": "ソフィア",
+        "contentURL": "https://altema.jp/mememori/chara/47",
+        "iconURL": "",
+        "idAsText": "47",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
+        "id": 7,
+        "name": "フレイシア",
+        "contentURL": "https://altema.jp/mememori/chara/7",
+        "iconURL": "",
+        "idAsText": "7",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
+        "id": 6,
+        "name": "サブリナ",
+        "contentURL": "https://altema.jp/mememori/chara/6",
+        "iconURL": "",
+        "idAsText": "6",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
+        "id": 10,
+        "name": "ディアン",
+        "contentURL": "https://altema.jp/mememori/chara/10",
+        "iconURL": "",
+        "idAsText": "10",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
+        "id": 9,
+        "name": "リーン",
+        "contentURL": "https://altema.jp/mememori/chara/9",
+        "iconURL": "",
+        "idAsText": "9",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
+        "id": 27,
+        "name": "テオドラ",
+        "contentURL": "https://altema.jp/mememori/chara/27",
+        "iconURL": "",
+        "idAsText": "27",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
+        "id": 28,
+        "name": "ペトラ",
+        "contentURL": "https://altema.jp/mememori/chara/28",
+        "iconURL": "",
+        "idAsText": "28",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
+        "id": 26,
+        "name": "アリアンロッド",
+        "contentURL": "https://altema.jp/mememori/chara/26",
+        "iconURL": "",
+        "idAsText": "26",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsRed",
+        "id": 36,
+        "name": "シャーロット",
+        "contentURL": "https://altema.jp/mememori/chara/36",
+        "iconURL": "",
+        "idAsText": "36",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
         "id": 13,
         "name": "コルディ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/13",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "13",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 57,
-        "name": "サブリナ (水着)",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 29,
-        "name": "ザラ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 37,
-        "name": "シズ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 96,
-        "name": "ティリー",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 14,
-        "name": "ニーナ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 59,
-        "name": "フィア―",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 99,
-        "name": "ポーラ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsGreen",
         "id": 12,
         "name": "マーリン",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/12",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "12",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsGreen",
+        "id": 59,
+        "name": "フィア―",
+        "contentURL": "https://altema.jp/mememori/chara/59",
+        "iconURL": "",
+        "idAsText": "59",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 117,
+        "name": "ステラ(翠)",
+        "contentURL": "https://altema.jp/mememori/chara/117",
+        "iconURL": "",
+        "idAsText": "117",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
         "id": 85,
         "name": "ミラ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/85",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "85",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 15,
-        "name": "メルティーユ",
-        "contentURL": "",
+        "ns": "CnsGreen",
+        "id": 14,
+        "name": "ニーナ",
+        "contentURL": "https://altema.jp/mememori/chara/14",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "14",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 74,
-        "name": "ユニ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 109,
-        "name": "ユルディズ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 31,
-        "name": "リブラ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": null,
-        "name": "ルーク",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": "ruku"
-    },
-    {
-        "ns": "None",
-        "id": 93,
-        "name": "ルナリンド(聖夜)",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsGreen",
         "id": 51,
         "name": "レア",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/51",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "51",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsGreen",
+        "id": 15,
+        "name": "メルティーユ",
+        "contentURL": "https://altema.jp/mememori/chara/15",
+        "iconURL": "",
+        "idAsText": "15",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 109,
+        "name": "ユルディズ",
+        "contentURL": "https://altema.jp/mememori/chara/109",
+        "iconURL": "",
+        "idAsText": "109",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 101,
+        "name": "D.D.",
+        "contentURL": "https://altema.jp/mememori/chara/101",
+        "iconURL": "",
+        "idAsText": "101",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 99,
+        "name": "ポーラ",
+        "contentURL": "https://altema.jp/mememori/chara/99",
+        "iconURL": "",
+        "idAsText": "99",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 57,
+        "name": "サブリナ (水着)",
+        "contentURL": "https://altema.jp/mememori/chara/57",
+        "iconURL": "",
+        "idAsText": "57",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 96,
+        "name": "ティリー",
+        "contentURL": "https://altema.jp/mememori/chara/96",
+        "iconURL": "",
+        "idAsText": "96",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 71,
+        "name": "クラウディア",
+        "contentURL": "https://altema.jp/mememori/chara/71",
+        "iconURL": "",
+        "idAsText": "71",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 93,
+        "name": "ルナリンド(聖夜)",
+        "contentURL": "https://altema.jp/mememori/chara/93",
+        "iconURL": "",
+        "idAsText": "93",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 74,
+        "name": "ユニ",
+        "contentURL": "https://altema.jp/mememori/chara/74",
+        "iconURL": "",
+        "idAsText": "74",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": null,
+        "name": "ルーク",
+        "contentURL": "https://altema.jp/mememori/ruku",
+        "iconURL": "",
+        "idAsText": "ruku",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 80,
+        "name": "アレクサンドラ",
+        "contentURL": "https://altema.jp/mememori/chara/80",
+        "iconURL": "",
+        "idAsText": "80",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 11,
+        "name": "アイビー",
+        "contentURL": "https://altema.jp/mememori/chara/11",
+        "iconURL": "",
+        "idAsText": "11",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 31,
+        "name": "リブラ",
+        "contentURL": "https://altema.jp/mememori/chara/31",
+        "iconURL": "",
+        "idAsText": "31",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
+        "id": 29,
+        "name": "ザラ",
+        "contentURL": "https://altema.jp/mememori/chara/29",
+        "iconURL": "",
+        "idAsText": "29",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsGreen",
         "id": 30,
         "name": "ロザリー",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/30",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "30",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 69,
-        "name": "アイリス(黒鎧)",
-        "contentURL": "",
+        "ns": "CnsGreen",
+        "id": 37,
+        "name": "シズ",
+        "contentURL": "https://altema.jp/mememori/chara/37",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "37",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 79,
-        "name": "アサヒ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 84,
-        "name": "アムレート(夏)",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsYellow",
         "id": 67,
         "name": "アモール(聖夜)",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/67",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "67",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 50,
-        "name": "ウィーラ",
-        "contentURL": "",
+        "ns": "CnsYellow",
+        "id": 69,
+        "name": "アイリス(黒鎧)",
+        "contentURL": "https://altema.jp/mememori/chara/69",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "69",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 19,
-        "name": "オリヴィエ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 38,
-        "name": "ガルム",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": null,
-        "name": "カロル",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": "karoru"
-    },
-    {
-        "ns": "None",
-        "id": 32,
-        "name": "スクルド",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 34,
-        "name": "ソテイラ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 88,
-        "name": "タマ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 33,
-        "name": "チェルナ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 17,
-        "name": "トロポン",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 18,
-        "name": "ハトホル",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsYellow",
         "id": 113,
         "name": "フェンリル(黄)",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/113",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "113",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 20,
-        "name": "プリマヴェーラ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 100,
-        "name": "ポプリ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 111,
-        "name": "ミフリ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 16,
-        "name": "ミミ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsYellow",
         "id": null,
         "name": "モーザ(水着)",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/mizugimosa",
         "iconURL": "",
-        "idAsText": "mizugimosa"
+        "idAsText": "mizugimosa",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsYellow",
+        "id": 19,
+        "name": "オリヴィエ",
+        "contentURL": "https://altema.jp/mememori/chara/19",
+        "iconURL": "",
+        "idAsText": "19",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 20,
+        "name": "プリマヴェーラ",
+        "contentURL": "https://altema.jp/mememori/chara/20",
+        "iconURL": "",
+        "idAsText": "20",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 16,
+        "name": "ミミ",
+        "contentURL": "https://altema.jp/mememori/chara/16",
+        "iconURL": "",
+        "idAsText": "16",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 84,
+        "name": "アムレート(夏)",
+        "contentURL": "https://altema.jp/mememori/chara/84",
+        "iconURL": "",
+        "idAsText": "84",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 120,
+        "name": "メルラン",
+        "contentURL": "https://altema.jp/mememori/chara/120",
+        "iconURL": "",
+        "idAsText": "120",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 111,
+        "name": "ミフリ",
+        "contentURL": "https://altema.jp/mememori/chara/111",
+        "iconURL": "",
+        "idAsText": "111",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
         "id": 104,
         "name": "モワノー",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/104",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "104",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": null,
-        "name": "リシェス",
-        "contentURL": "",
+        "ns": "CnsYellow",
+        "id": 100,
+        "name": "ポプリ",
+        "contentURL": "https://altema.jp/mememori/chara/100",
         "iconURL": "",
-        "idAsText": "rishesu"
+        "idAsText": "100",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsYellow",
         "id": 98,
         "name": "ルスティカ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/98",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "98",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsYellow",
+        "id": 88,
+        "name": "タマ",
+        "contentURL": "https://altema.jp/mememori/chara/88",
+        "iconURL": "",
+        "idAsText": "88",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 79,
+        "name": "アサヒ",
+        "contentURL": "https://altema.jp/mememori/chara/79",
+        "iconURL": "",
+        "idAsText": "79",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": null,
+        "name": "リシェス",
+        "contentURL": "https://altema.jp/mememori/rishesu",
+        "iconURL": "",
+        "idAsText": "rishesu",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 50,
+        "name": "ウィーラ",
+        "contentURL": "https://altema.jp/mememori/chara/50",
+        "iconURL": "",
+        "idAsText": "50",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": null,
+        "name": "カロル",
+        "contentURL": "https://altema.jp/mememori/karoru",
+        "iconURL": "",
+        "idAsText": "karoru",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 17,
+        "name": "トロポン",
+        "contentURL": "https://altema.jp/mememori/chara/17",
+        "iconURL": "",
+        "idAsText": "17",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 18,
+        "name": "ハトホル",
+        "contentURL": "https://altema.jp/mememori/chara/18",
+        "iconURL": "",
+        "idAsText": "18",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 32,
+        "name": "スクルド",
+        "contentURL": "https://altema.jp/mememori/chara/32",
+        "iconURL": "",
+        "idAsText": "32",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 33,
+        "name": "チェルナ",
+        "contentURL": "https://altema.jp/mememori/chara/33",
+        "iconURL": "",
+        "idAsText": "33",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 34,
+        "name": "ソテイラ",
+        "contentURL": "https://altema.jp/mememori/chara/34",
+        "iconURL": "",
+        "idAsText": "34",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsYellow",
+        "id": 38,
+        "name": "ガルム",
+        "contentURL": "https://altema.jp/mememori/chara/38",
+        "iconURL": "",
+        "idAsText": "38",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsWhite",
         "id": 102,
         "name": "A.A.(天)",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/102",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "102",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 86,
-        "name": "アイネ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 94,
-        "name": "アイリーン",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsWhite",
         "id": 64,
         "name": "エルフリンデ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/64",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "64",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 46,
-        "name": "ケルベロス",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 21,
-        "name": "ナターシャ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 39,
-        "name": "フォルティナ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 89,
-        "name": "メリア",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsWhite",
         "id": null,
         "name": "ルサールカ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/rusaruka",
         "iconURL": "",
-        "idAsText": "rusaruka"
+        "idAsText": "rusaruka",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsWhite",
+        "id": 46,
+        "name": "ケルベロス",
+        "contentURL": "https://altema.jp/mememori/chara/46",
+        "iconURL": "",
+        "idAsText": "46",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsWhite",
+        "id": 118,
+        "name": "リヴェリア",
+        "contentURL": "https://altema.jp/mememori/chara/118",
+        "iconURL": "",
+        "idAsText": "118",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsWhite",
         "id": null,
         "name": "ルミカ",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/rumika",
         "iconURL": "",
-        "idAsText": "rumika"
+        "idAsText": "rumika",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsWhite",
+        "id": 94,
+        "name": "アイリーン",
+        "contentURL": "https://altema.jp/mememori/chara/94",
+        "iconURL": "",
+        "idAsText": "94",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsWhite",
+        "id": 86,
+        "name": "アイネ",
+        "contentURL": "https://altema.jp/mememori/chara/86",
+        "iconURL": "",
+        "idAsText": "86",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsWhite",
         "id": 78,
         "name": "ロザリー(カリタスの使徒)",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/78",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "78",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 48,
-        "name": "A.A.",
-        "contentURL": "",
+        "ns": "CnsWhite",
+        "id": 39,
+        "name": "フォルティナ",
+        "contentURL": "https://altema.jp/mememori/chara/39",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "39",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 61,
-        "name": "アームストロング",
-        "contentURL": "",
+        "ns": "CnsWhite",
+        "id": 21,
+        "name": "ナターシャ",
+        "contentURL": "https://altema.jp/mememori/chara/21",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "21",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 65,
-        "name": "イリア(神呪)",
-        "contentURL": "",
+        "ns": "CnsWhite",
+        "id": 89,
+        "name": "メリア",
+        "contentURL": "https://altema.jp/mememori/chara/89",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "89",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 41,
-        "name": "ヴァルリーデ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": 49,
-        "name": "オフィーリア",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
-        "id": null,
-        "name": "カーミラ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": "carmilla"
-    },
-    {
-        "ns": "None",
-        "id": 82,
-        "name": "カグヤ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsBlack",
         "id": 114,
         "name": "ケルベロス(冥)",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/114",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "114",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsBlack",
         "id": 90,
         "name": "ナターシャ(冥)",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/90",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "90",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
-        "id": 107,
-        "name": "ネブラ",
-        "contentURL": "",
-        "iconURL": "",
-        "idAsText": ""
-    },
-    {
-        "ns": "None",
+        "ns": "CnsBlack",
         "id": 75,
         "name": "パラデア",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/75",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "75",
+        "idAttributeForHTML": ""
     },
     {
-        "ns": "None",
+        "ns": "CnsBlack",
+        "id": 65,
+        "name": "イリア(神呪)",
+        "contentURL": "https://altema.jp/mememori/chara/65",
+        "iconURL": "",
+        "idAsText": "65",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlack",
+        "id": null,
+        "name": "カーミラ",
+        "contentURL": "https://altema.jp/mememori/carmilla",
+        "iconURL": "",
+        "idAsText": "carmilla",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlack",
+        "id": 107,
+        "name": "ネブラ",
+        "contentURL": "https://altema.jp/mememori/chara/107",
+        "iconURL": "",
+        "idAsText": "107",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlack",
+        "id": 61,
+        "name": "アームストロング",
+        "contentURL": "https://altema.jp/mememori/chara/61",
+        "iconURL": "",
+        "idAsText": "61",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlack",
+        "id": 49,
+        "name": "オフィーリア",
+        "contentURL": "https://altema.jp/mememori/chara/49",
+        "iconURL": "",
+        "idAsText": "49",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlack",
         "id": 22,
         "name": "ルナリンド",
-        "contentURL": "",
+        "contentURL": "https://altema.jp/mememori/chara/22",
         "iconURL": "",
-        "idAsText": ""
+        "idAsText": "22",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlack",
+        "id": 82,
+        "name": "カグヤ",
+        "contentURL": "https://altema.jp/mememori/chara/82",
+        "iconURL": "",
+        "idAsText": "82",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlack",
+        "id": 41,
+        "name": "ヴァルリーデ",
+        "contentURL": "https://altema.jp/mememori/chara/41",
+        "iconURL": "",
+        "idAsText": "41",
+        "idAttributeForHTML": ""
+    },
+    {
+        "ns": "CnsBlack",
+        "id": 48,
+        "name": "A.A.",
+        "contentURL": "https://altema.jp/mememori/chara/48",
+        "iconURL": "",
+        "idAsText": "48",
+        "idAttributeForHTML": ""
     }
 ]
