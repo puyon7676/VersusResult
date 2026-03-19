@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Combat Test</title>
+
+<script>
+  (function() {
+    // 1. 今の場所が「自分のPC（開発環境）」かどうかを判定
+    const isLocal = window.location.hostname === "localhost" || 
+                    window.location.hostname === "127.0.0.1" || 
+                    window.location.hostname.startsWith("192.168."); // iPadからPCを見る時用
+
+    // 2. 読み込むファイルの「住所」を振り分ける
+    const jszipSrc = isLocal ?
+        "./jszip_dist/jszip.min.js" :
+        "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
+
+    const jsstoreSrc = isLocal ?
+        "./jsstore_dist/jsstore.min.js" :
+        "https://cdn.jsdelivr.net/npm/jsstore/dist/jsstore.min.js";
+    // 後で main.js から見れるように、window（グローバル）に覚えさせる
+    window.EVONA_CONFIG = {
+      isLocal: isLocal,
+      workerFile: isLocal ? 
+        "./jsstore_dist/jsstore.worker.min.js" :
+        //"https://cdn.jsdelivr.net/npm/jsstore/dist/jsstore.worker.min.js"
+        "./jsstore_dist/jsstore.worker.min.js"
+      ,
+      demo: isLocal ? false : true
+    };
+
+    // 3. 順番通りに「粛々と」読み込ませる関数
+    function injectScript(src, isModule = false) {
+      const s = document.createElement('script');
+      s.src = src;
+      if (isModule) s.type = "module";
+      s.async = false; // これをfalseにすることで、上の行から順番に読み込まれます
+      document.head.appendChild(s);
+    }
+
+    // 実行（JSZip -> JsStore の順で読み込み）
+    injectScript(jszipSrc);
+    injectScript(jsstoreSrc);
+  })();
+</script>
+
+<style>
+body {
+    /* 画像の指定 */
+    background-image: url('./wallpaper.png'); 
+    
+    /* 壁紙として固定（スクロールしても動かない） */
+    background-attachment: fixed;
+    
+    /* 画面いっぱいに広げる（歪ませずにカバー） */
+    background-size: cover;
+    
+    /* 常に中央に配置 */
+    background-position: center;
+    
+    /* 背景が明るすぎて文字が見えにくい時のための暗幕（テクニック！） */
+    background-color: rgba(0, 0, 0, 0.2); 
+    background-blend-mode: darken;
+}
+</style>
+
+  <script type="module" crossorigin src="./assets/index-DrjA8CQk.js"></script>
+</head>
+<body>
+  <!--
+  <script type="module" src="./dist/main.js"></script>
+  -->
+
+  <div id="splash-screen"></div>
+
+  <div id="combatForm" class="combatForm"></div>
+
+  <div id="charListArea" class="charListArea"></div>
+  <div id="CharSummary" class="CharSummary"></div>
+  <div id="playerForm" class="playerForm"></div>
+  <div id="enemyForm" class="enemyForm"></div>
+  <div id="dockForm" class="dockForm"></div>
+</body>
+</html>
