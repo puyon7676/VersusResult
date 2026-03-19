@@ -26,6 +26,8 @@
         "./jsstore_dist/jsstore.worker.min.js" :
         //"https://cdn.jsdelivr.net/npm/jsstore/dist/jsstore.worker.min.js"
         "./jsstore_dist/jsstore.worker.min.js"
+      ,
+      demo: isLocal ? false : true
     };
 
     // 3. 順番通りに「粛々と」読み込ませる関数
@@ -43,7 +45,27 @@
   })();
 </script>
 
-  <script type="module" crossorigin src="./assets/index-C4HUYOn3.js"></script>
+<style>
+body {
+    /* 画像の指定 */
+    background-image: url('./wallpaper.png'); 
+    
+    /* 壁紙として固定（スクロールしても動かない） */
+    background-attachment: fixed;
+    
+    /* 画面いっぱいに広げる（歪ませずにカバー） */
+    background-size: cover;
+    
+    /* 常に中央に配置 */
+    background-position: center;
+    
+    /* 背景が明るすぎて文字が見えにくい時のための暗幕（テクニック！） */
+    background-color: rgba(0, 0, 0, 0.2); 
+    background-blend-mode: darken;
+}
+</style>
+
+  <script type="module" crossorigin src="./assets/index-DrjA8CQk.js"></script>
 </head>
 <body>
   <!--
