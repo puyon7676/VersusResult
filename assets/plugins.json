@@ -1,12 +1,12 @@
 [
-  "SitePqImporter.js",
-  "SiteMmImporter.js",
-  "SiteHsImporter.js",
-  "SiteUmImporter.js",
-  "SiteBaImporter.js",
-  "SiteFgImporter.js",
-  "SiteAlImporter.js",
-  "SiteGtImporter.js",
-  "SiteNkImporter.js",
-  "SitePcImporter.js"
+  "./assets/SitePqImporter.js",
+  "./assets/SiteMmImporter.js",
+  "./assets/SiteHsImporter.js",
+  "./assets/SiteUmImporter.js",
+  "./assets/SiteBaImporter.js",
+  "./assets/SiteFgImporter.js",
+  "./assets/SiteAlImporter.js",
+  "./assets/SiteGtImporter.js",
+  "./assets/SiteNkImporter.js",
+  "./assets/SitePcImporter.js"
 ]
