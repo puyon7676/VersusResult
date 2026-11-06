@@ -2186,7 +2186,7 @@ ${HtmlMakerCommonCss.radioActCssText}
             const url1Elem = elems1.get(urlCss) || null;
             const title2Elem = elems2.get(titleCss) || null;
             const url2Elem = elems2.get(urlCss) || null;
-            if (title1Elem && url1 && title2Elem && url2Elem) {
+            if (title1Elem && url1Elem && title2Elem && url2Elem) {
                 title1Elem.value = title2;
                 url1Elem.value = url2;
                 title2Elem.value = title1;
@@ -2247,6 +2247,32 @@ ${HtmlMakerCommonCss.radioActCssText}
             }
         }
         return toolTipNew;
+    }
+    function playEditUpdate(ytArray) {
+        if (playEditToolTip === null)
+            return;
+        const rows = playEditToolTip.TableRows();
+        if (rows === null)
+            return;
+        const titleCss = plEditTitleCssName();
+        const urlCss = plEditUrlCssName();
+        let iPl = 0;
+        for (const row of rows) {
+            const elems1 = playEditToolTip.RowElems(row.rowIndex);
+            const title1Elem = elems1.get(titleCss) || null;
+            const url1Elem = elems1.get(urlCss) || null;
+            if (title1Elem && url1Elem) {
+                if (iPl < ytArray.length) {
+                    title1Elem.value = ytArray[iPl].title;
+                    url1Elem.value = ytVid(ytArray[iPl].url); //ytArray[iPl].url
+                }
+                else {
+                    title1Elem.value = ``;
+                    url1Elem.value = ``;
+                }
+            }
+            iPl++;
+        }
     }
     function playEditCssText() {
         const btnUpName = plEditUpCssName();
@@ -2354,6 +2380,13 @@ ${HtmlMakerCommonCss.btnHoverCssText}
                 const dataArray = await env.loadJson(jsonURL);
                 URL.revokeObjectURL(jsonURL);
                 console.log(dataArray);
+                // ⚡️ 鉄壁の検査線：1件目のデータを取り出して、.ytpl 特有のプロティ（title）があるか逆引きする！
+                if (Array.isArray(dataArray) && dataArray.length > 0 && !("title" in dataArray[0])) {
+                    console.error("❌【防衛線発火】ファイルはJSONだけど、中身が.ytplデータじゃありません！");
+                    const msgbox = new EvonaMessageBox();
+                    await msgbox.showWait("選択されたファイルの形式（内容）が正しくありません。");
+                    return; // 処理をここで安全にブレーキ（遮断）して、クラッシュを未然に防ぎます！
+                }
                 const ytArray = dataArray;
                 ytInfos.splice(0, ytInfos.length);
                 for (const info of ytArray) {
@@ -2370,6 +2403,7 @@ ${HtmlMakerCommonCss.btnHoverCssText}
                 setPlayListItems = setYtPlayListItems;
                 makePlayListCtl();
                 ytPlayListUpdate();
+                playEditUpdate(ytInfos);
             }
             openUI = null;
         };
@@ -2652,9 +2686,9 @@ ${HtmlMakerCommonCss.btnHoverCssText}
                     console.log('YouTubeプレイヤーの準備が完了し、動画が表示されました！');
                     if (ytFirstSeek > 0) {
                         ytPlayer.seekTo(ytFirstSeek, true);
-                        ytPlayer.playVideo();
                         ytFirstSeek = -1;
                     }
+                    ytPlayer.playVideo();
                 },
                 onStateChange: async (event) => {
                     //console.log('現在の状態コード:', event.data);
