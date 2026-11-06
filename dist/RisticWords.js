@@ -1275,7 +1275,6 @@ ${btnOptCss}
             toolTipNew.onChangedTableSelection = this.onRisticChanged;
             toolTipNew.onButtonClicked = this.onRisticButtonClick;
             toolTipNew.onCheckChanged = this.onRisticCheckChanged;
-            //toolTipNew.closeType = HtmlMakerToolTipCloseTypes.InVisible
             toolTipNew.MgrType = HtmlMakerToolTipMgrTypes.NotMgr;
             toolTipNew.heightPx = `400`;
             toolTipNew.applyCss();

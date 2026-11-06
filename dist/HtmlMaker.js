@@ -6598,6 +6598,12 @@ export class HtmlMakerToolTip {
         }
         return firstVisibleRow;
     }
+    elemText(elem) {
+        if (elem instanceof HTMLInputElement) {
+            return elem.value;
+        }
+        return elem.textContent;
+    }
     RowTextsByIndex(rowIndex) {
         const rows = this.TableRows();
         if (rows === null)
@@ -6606,7 +6612,7 @@ export class HtmlMakerToolTip {
         const resMap = new Map;
         for (const td of row.cells) {
             const elem = td.children[0];
-            resMap.set(elem.className, elem.textContent);
+            resMap.set(elem.className, this.elemText(elem));
         }
         return resMap;
     }
@@ -6614,7 +6620,7 @@ export class HtmlMakerToolTip {
         const resMap = new Map;
         for (const td of row.cells) {
             const elem = td.children[0];
-            resMap.set(elem.className, elem.textContent);
+            resMap.set(elem.className, this.elemText(elem));
         }
         return resMap;
     }

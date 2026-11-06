@@ -28,7 +28,7 @@ import { SiteImporter, ImporterMap } from "./SiteImporter.js";
 //import { experiment05 } from "./SegmenterHelper.js"
 //import { sortEx05 } from "./CharDB.js"
 //import { fullscreenScreensaver } from "./Screensaver.js"
-import { ytInfos } from "./YoutubeInfos.js";
+import { ytInfos, ytInfo, convYtUrlPrefix } from "./YoutubeInfos.js";
 export const LoadedResultTypes = {
     Unknown: "Unknown",
     Success: "Success",
@@ -152,7 +152,6 @@ ${HtmlMakerCommonCss.radioActCssText}
             toolTipNew.SetTitle(uiLabelText + ``);
             toolTipNew.SetTable(table, gameSelectCssText());
             toolTipNew.onChangedTableSelection = onGameSelectChanged;
-            //toolTipNew.closeType = HtmlMakerToolTipCloseTypes.InVisible
             toolTipNew.MgrType = HtmlMakerToolTipMgrTypes.NotMgr;
             toolTipNew.heightPx = `200`;
             toolTipNew.applyCss();
@@ -1093,7 +1092,6 @@ ${HtmlMakerCommonCss.radioActCssText}
             toolTipNew.SetTitle(uiLabelText + ``);
             toolTipNew.SetTable(table, envOptCssText());
             toolTipNew.onChangedTableSelection = onEnvOptionChanged;
-            //toolTipNew.closeType = HtmlMakerToolTipCloseTypes.InVisible
             toolTipNew.MgrType = HtmlMakerToolTipMgrTypes.NotMgr;
             toolTipNew.applyCss();
             toolTipNew.Show(dockDlg.className);
@@ -1215,7 +1213,6 @@ color: ${HtmlMakerCommonCss.normBkColor};
             toolTipNew.SetTable(table, homePathCssText());
             toolTipNew.onChangedTableSelection = onHomePathChanged;
             toolTipNew.EnableAction(`保存`, onHomePathActionReq);
-            //toolTipNew.closeType = HtmlMakerToolTipCloseTypes.InVisible
             toolTipNew.MgrType = HtmlMakerToolTipMgrTypes.NotMgr;
             toolTipNew.heightPx = `400`;
             toolTipNew.applyCss();
@@ -1415,7 +1412,6 @@ text-align: left;
             toolTipNew.SetTable(table, siteZipCssText());
             toolTipNew.onChangedTableSelection = onSiteZipChanged;
             toolTipNew.EnableAction(`更新`, onSiteActionReq);
-            //toolTipNew.closeType = HtmlMakerToolTipCloseTypes.InVisible
             toolTipNew.MgrType = HtmlMakerToolTipMgrTypes.NotMgr;
             toolTipNew.heightPx = `400`;
             toolTipNew.applyCss();
@@ -1772,7 +1768,6 @@ ${HtmlMakerCommonCss.radioActCssText}
             toolTipNew.SetTitle(uiLabelText + `：オプション`);
             toolTipNew.SetTable(table, combatOptCssText());
             toolTipNew.onChangedTableSelection = onCombatOptionChanged;
-            //toolTipNew.closeType = HtmlMakerToolTipCloseTypes.InVisible
             toolTipNew.MgrType = HtmlMakerToolTipMgrTypes.NotMgr;
             toolTipNew.applyCss();
             toolTipNew.Show(combatDlgElem.className);
@@ -1831,7 +1826,7 @@ ${HtmlMakerCommonCss.radioActCssText}
         }
         if (isDl) {
             const pauseInfo = `${videoFile}\t${pauseTime}`;
-            downloadPauseFile(`pauseInfo.txt`, pauseInfo);
+            downloadVideoInfoFile(`pauseInfo.txt`, pauseInfo);
         }
     }
     async function onVideoEnded(event) {
@@ -1899,7 +1894,7 @@ ${HtmlMakerCommonCss.radioActCssText}
             playListCtl.UpdateItems(texts);
         }
     }
-    function downloadPauseFile(filename, content) {
+    function downloadVideoInfoFile(filename, content) {
         const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -2011,6 +2006,7 @@ ${HtmlMakerCommonCss.radioActCssText}
     }
     //
     let videoToolTip = null;
+    let playEditToolTip = null;
     let playListCtl = null;
     const currentPlayMark = `🎦`;
     let setPlayListItems;
@@ -2032,7 +2028,7 @@ ${HtmlMakerCommonCss.radioActCssText}
     }
     function makePlayListCtl() {
         const dlg = videoToolTip.dlg;
-        const btn = optListButton;
+        const btn = videoListButton;
         //const btn: HTMLButtonElement = dockUI.selectedPlayer === videoElem ? optListButton! : optNextButton!
         if (playListCtl !== null) {
             playListCtl.dispose();
@@ -2049,6 +2045,7 @@ ${HtmlMakerCommonCss.radioActCssText}
         choice.itemWidth = 200;
         choice.twinText = `❌`;
         choice.setChoiceItems(choiceItems, HtmlMakerChoiceTwinModes.VisLast);
+        choice.headerTitle = `プレイリスト`;
         choice.onCancel = onVideoListButtonCancel;
         choice.callerElem = btn;
         const htmlMaker = new HtmlMaker();
@@ -2089,7 +2086,219 @@ ${HtmlMakerCommonCss.radioActCssText}
         });
         playListCtl = choice;
     }
-    async function onVideoOptOnFirstVisible() {
+    //
+    function setPlayEditTableRow(cellIndex, rowIndex, title, url, table) {
+        const titleCssClassName = plEditTitleCssName();
+        const inputTitle = new HtmlMakerOptionInput();
+        inputTitle.disableKeyDown = false;
+        inputTitle.enableClicked = true;
+        inputTitle.placeholder = `動画タイトル`;
+        inputTitle.value = title;
+        table.getCell(cellIndex, rowIndex).typeInfo.setInput(inputTitle);
+        table.getCell(cellIndex, rowIndex).className = titleCssClassName;
+        table.getCell(cellIndex, rowIndex).typeInfo.using.itemId = rowIndex + table.firstRowIndex;
+        cellIndex++;
+        const urlCssClassName = plEditUrlCssName();
+        const inputUrl = new HtmlMakerOptionInput();
+        inputUrl.disableKeyDown = false;
+        inputUrl.enableClicked = true;
+        inputUrl.placeholder = `動画VID`;
+        inputUrl.value = url;
+        table.getCell(cellIndex, rowIndex).typeInfo.setInput(inputUrl);
+        table.getCell(cellIndex, rowIndex).className = urlCssClassName;
+        table.getCell(cellIndex, rowIndex).typeInfo.using.itemId = rowIndex + table.firstRowIndex;
+        cellIndex++;
+        const upCssClassName = plEditUpCssName();
+        table.getCell(cellIndex, rowIndex).typeInfo.setButton(`🔼`);
+        table.getCell(cellIndex, rowIndex).className = upCssClassName;
+        table.getCell(cellIndex, rowIndex).tdName = `td_` + upCssClassName;
+        table.getCell(cellIndex, rowIndex).typeInfo.using.itemId = rowIndex + table.firstRowIndex;
+        cellIndex++;
+        const dnCssClassName = plEditDnCssName();
+        table.getCell(cellIndex, rowIndex).typeInfo.setButton(`🔽`);
+        table.getCell(cellIndex, rowIndex).className = dnCssClassName;
+        table.getCell(cellIndex, rowIndex).tdName = `td_` + dnCssClassName;
+        table.getCell(cellIndex, rowIndex).typeInfo.using.itemId = rowIndex + table.firstRowIndex;
+    }
+    function makePlayEditTable() {
+        const nPl = 300;
+        //テーブル作成
+        const nCol = 4;
+        const table = new HtmlMakerTable();
+        table.makeDim(nCol, nPl);
+        //カラム定義
+        for (let iPl = 0; iPl < nPl; iPl++) {
+            let title = ``;
+            let url = ``;
+            if (iPl < ytInfos.length) {
+                const info = ytInfos[iPl];
+                title = info.title;
+                url = ytVid(info.url);
+            }
+            setPlayEditTableRow(0, iPl, title, url, table);
+        }
+        //行テンプレート初期化
+        table.makeRowTemplate(plEditTableRowCssName());
+        return table;
+    }
+    const onPlayEditActionReq = async function () {
+        if (playEditToolTip === null)
+            return;
+        const rows = playEditToolTip.TableRows();
+        if (rows === null)
+            return;
+        const plArray = new Array;
+        for (const row of rows) {
+            const texts = playEditToolTip.RowTexts(row);
+            const info = new ytInfo;
+            info.title = texts.get(plEditTitleCssName()) || ``;
+            info.url = texts.get(plEditUrlCssName()) || ``;
+            plArray.push(info);
+        }
+        const plJson = JSON.stringify(plArray, null, 2);
+        const plFile = `playList.ytpl`;
+        downloadVideoInfoFile(plFile, plJson);
+        const msgbox = new EvonaMessageBox;
+        await msgbox.showWait(`ダウンロードフォルダへプレイリストを保存しました。<br>${plFile}`);
+    };
+    const onPlayEditButtonClick = async (rowindex, btn, div, tbl, row, col) => {
+        console.log(`onPlayEditButtonClick`, rowindex, btn, div, tbl, row, col);
+        if (rowindex <= -1)
+            return;
+        if (playEditToolTip === null)
+            return;
+        const rows = playEditToolTip.TableRows();
+        if (rows === null)
+            return;
+        const titleCss = plEditTitleCssName();
+        const urlCss = plEditUrlCssName();
+        function swap(row, ofs) {
+            const row2 = rows[row.rowIndex + ofs];
+            const texts1 = playEditToolTip.RowTexts(row);
+            const texts2 = playEditToolTip.RowTexts(row2);
+            const title1 = texts1.get(titleCss) || ``;
+            const url1 = texts1.get(urlCss) || ``;
+            const title2 = texts2.get(titleCss) || ``;
+            const url2 = texts2.get(urlCss) || ``;
+            const elems1 = playEditToolTip.RowElems(row.rowIndex);
+            const elems2 = playEditToolTip.RowElems(row.rowIndex + ofs);
+            const title1Elem = elems1.get(titleCss) || null;
+            const url1Elem = elems1.get(urlCss) || null;
+            const title2Elem = elems2.get(titleCss) || null;
+            const url2Elem = elems2.get(urlCss) || null;
+            if (title1Elem && url1 && title2Elem && url2Elem) {
+                title1Elem.value = title2;
+                url1Elem.value = url2;
+                title2Elem.value = title1;
+                url2Elem.value = url1;
+            }
+        }
+        switch (btn.className) {
+            case plEditUpCssName():
+                swap(row, -1);
+                break;
+            case plEditDnCssName():
+                swap(row, 1);
+                break;
+        }
+    };
+    async function makePlayEditCtlToolTip() {
+        const toolTipName = HtmlMakerToolTipMgr.MakeUniqueName(`play`, `edit`);
+        const toolTipFind = HtmlMakerToolTipMgr.FindBy(toolTipName);
+        if (toolTipFind !== null)
+            return null;
+        HtmlMakerToolTipMgr.Add(toolTipName, HtmlMakerToolTipCloseTypes.InVisible);
+        const toolTipNew = HtmlMakerToolTipMgr.FindBy(toolTipName);
+        if (toolTipNew !== null) {
+            const table = await makePlayEditTable();
+            let uiLabelText = `プレイリスト編集`;
+            toolTipNew.name = toolTipName;
+            toolTipNew.SetTitle(uiLabelText);
+            toolTipNew.EnableAction(`保存`, onPlayEditActionReq);
+            //toolTipNew.InvisibleAll()
+            toolTipNew.VisibleCpBtn(false);
+            toolTipNew.VisibleMgrBtn(false);
+            toolTipNew.SetTable(table, playEditCssText());
+            toolTipNew.heightPx = `400`;
+            toolTipNew.applyCss();
+            toolTipNew.MgrType = HtmlMakerToolTipMgrTypes.NotMgr;
+            toolTipNew.Show(document.body); //videoElem.className
+            toolTipNew.SetVisible(false);
+            toolTipNew.EnableEvents();
+            toolTipNew.onButtonClicked = onPlayEditButtonClick;
+            //toolTipNew.EnableFirstVisible(onVideoOnFirstVisible)
+            //toolTipNew.onChangeVisible = onVideoOnChangeVisible
+            const rows = toolTipNew.TableRows();
+            if (rows !== null) {
+                const firstRow = toolTipNew.RowElems(rows[0].rowIndex);
+                if (firstRow !== null) {
+                    const elem = firstRow.get(plEditUpCssName());
+                    if (elem !== undefined) {
+                        elem.style.display = `none`;
+                    }
+                }
+                const lastRow = toolTipNew.RowElems(rows[rows.length - 1].rowIndex);
+                if (lastRow !== null) {
+                    const elem = lastRow.get(plEditDnCssName());
+                    if (elem !== undefined) {
+                        elem.style.display = `none`;
+                    }
+                }
+            }
+        }
+        return toolTipNew;
+    }
+    function playEditCssText() {
+        const btnUpName = plEditUpCssName();
+        const btnDnName = plEditDnCssName();
+        const btnCss = `
+background: ${HtmlMakerCommonCss.normBkColor};
+color: black;
+border: 1px solid #777;
+border-radius: 3px;
+width: 24px;
+height: 24px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-size: 12px;
+padding-bottom: 4px; /* 下にパディングを入れて、文字を上に押し上げる */
+cursor: pointer;
+transition: background 0.2s;
+`;
+        return `
+[class*="${btnUpName}"] {
+${btnCss}
+}
+[class*="${btnUpName}"]:hover {
+${HtmlMakerCommonCss.btnHoverCssText}
+}
+[class*="${btnDnName}"] {
+${btnCss}
+}
+[class*="${btnDnName}"]:hover {
+${HtmlMakerCommonCss.btnHoverCssText}
+}
+`.trim();
+    }
+    function plEditTableRowCssName() {
+        return `playEdit-row`;
+    }
+    function plEditTitleCssName() {
+        return `playEdit-title`;
+    }
+    function plEditUrlCssName() {
+        return `playEdit-url`;
+    }
+    function plEditUpCssName() {
+        return `playEdit-up`;
+    }
+    function plEditDnCssName() {
+        return `playEdit-down`;
+    }
+    playEditToolTip = await makePlayEditCtlToolTip();
+    //
+    async function onVideoOnFirstVisible() {
         if (videoToolTip === null)
             return;
         const dlg = videoToolTip.dlg;
@@ -2106,18 +2315,24 @@ ${HtmlMakerCommonCss.radioActCssText}
             setPlayListItems = setYtPlayListItems;
             makePlayListCtl();
             ytPlayListUpdate();
+            if (playListCtl !== null)
+                playListCtl.setVisible(false);
+            if (playEditToolTip !== null)
+                playEditToolTip.SetVisible(false);
         }
     }
-    async function onVideoOptOnChangeVisible(toTrue) {
+    async function onVideoOnChangeVisible(toTrue) {
         if (dockUI.selectedPlayer === videoElem) {
             HtmlMakerMisc.SetVisible(dockUI.ytPlayer, false);
         }
         else {
             HtmlMakerMisc.SetVisible(videoElem, false);
         }
-        //const visible = dockUI.selectedPlayer === videoElem ? true : false
-        const visible = true;
-        HtmlMakerMisc.SetVisible(optOpenButton, visible);
+        HtmlMakerMisc.SetVisible(videoOpenButton, true);
+        //Ytのときだけ表示
+        const visible = dockUI.selectedPlayer === dockUI.ytPlayer ? true : false;
+        HtmlMakerMisc.SetVisible(videoEditButton, visible);
+        //playEditToolTip!.SetVisible(visible)
     }
     let openUI = null;
     const onClickOpenBtn = async (event) => {
@@ -2129,10 +2344,10 @@ ${HtmlMakerCommonCss.radioActCssText}
             openUI.multiple = false;
         }
         openUI.onSelect = async (files) => {
-            if (optOpenButton === null)
+            if (videoOpenButton === null)
                 return;
             if (dockUI.selectedPlayer === videoElem) {
-                await doDropVideoFiles(optOpenButton, files);
+                await doDropVideoFiles(videoOpenButton, files);
             }
             else {
                 const jsonURL = URL.createObjectURL(files[0]);
@@ -2142,6 +2357,9 @@ ${HtmlMakerCommonCss.radioActCssText}
                 const ytArray = dataArray;
                 ytInfos.splice(0, ytInfos.length);
                 for (const info of ytArray) {
+                    info.url = convYtUrlPrefix(info.url);
+                    if (info.url.length === 0)
+                        continue;
                     ytInfos.push(info);
                 }
                 ytFirstPlay = true;
@@ -2158,7 +2376,7 @@ ${HtmlMakerCommonCss.radioActCssText}
         openUI.onCancel = async () => {
             openUI = null;
         };
-        openUI.parentElem = optOpenButton;
+        openUI.parentElem = videoOpenButton;
         openUI.Open();
     };
     const onClickBackBtn = async (event) => {
@@ -2178,6 +2396,12 @@ ${HtmlMakerCommonCss.radioActCssText}
     const onClickListBtn = async (event) => {
         makePlayListCtl();
     };
+    const onClickEditBtn = async (event) => {
+        if (playEditToolTip === null)
+            return;
+        const visible = playEditToolTip.GetVisible();
+        playEditToolTip.SetVisible(!visible);
+    };
     const onVideoListButtonCancel = async (choice, callerElem) => {
         choice.dispose();
         if (callerElem !== null) {
@@ -2185,11 +2409,12 @@ ${HtmlMakerCommonCss.radioActCssText}
             htmlMaker.EnableElem(callerElem, true);
         }
     };
-    let optOpenButton = null;
-    let optBackButton = null;
-    let optNextButton = null;
-    let optListButton = null;
-    function makeVideoActions() {
+    let videoOpenButton = null;
+    let videoBackButton = null;
+    let videoNextButton = null;
+    let videoListButton = null;
+    let videoEditButton = null;
+    function makeVideoCtlBtns() {
         if (videoToolTip === null)
             return;
         if (videoToolTip.actDiv === null)
@@ -2200,6 +2425,7 @@ ${HtmlMakerCommonCss.radioActCssText}
         const backBtnName = `${actDiv.className}-back`;
         const nextBtnName = `${actDiv.className}-next`;
         const listBtnName = `${actDiv.className}-list`;
+        const editBtnName = `${actDiv.className}-edit`;
         const openButton = document.createElement("button");
         openButton.id = openBtnName;
         openButton.className = openBtnName;
@@ -2225,19 +2451,28 @@ ${HtmlMakerCommonCss.radioActCssText}
         listButton.id = listBtnName;
         listButton.className = listBtnName;
         listButton.innerHTML = `🎦`;
-        listButton.title = `List`;
+        listButton.title = `PlayList`;
         actDivParent.appendChild(listButton);
         listButton.addEventListener("click", onClickListBtn);
-        optOpenButton = openButton;
-        optBackButton = backButton;
-        optNextButton = nextButton;
-        optListButton = listButton;
+        const editButton = document.createElement("button");
+        editButton.id = editBtnName;
+        editButton.className = editBtnName;
+        editButton.innerHTML = `🎹`;
+        editButton.title = `EditPlayList`;
+        actDivParent.appendChild(editButton);
+        editButton.addEventListener("click", onClickEditBtn);
+        videoOpenButton = openButton;
+        videoBackButton = backButton;
+        videoNextButton = nextButton;
+        videoListButton = listButton;
+        videoEditButton = editButton;
     }
-    function videoCssText() {
-        const btnOpenName = `${optOpenButton.className}`;
-        const btnBackName = `${optBackButton.className}`;
-        const btnNextName = `${optNextButton.className}`;
-        const btnListName = `${optListButton.className}`;
+    function videoCtlCssText() {
+        const btnOpenName = `${videoOpenButton.className}`;
+        const btnBackName = `${videoBackButton.className}`;
+        const btnNextName = `${videoNextButton.className}`;
+        const btnListName = `${videoListButton.className}`;
+        const btnEditName = `${videoEditButton.className}`;
         const btnCss = `
 background: ${HtmlMakerCommonCss.normBkColor};
 color: black;
@@ -2278,10 +2513,16 @@ ${btnCss}
 #${btnListName}:hover {
 ${HtmlMakerCommonCss.btnHoverCssText}
 }
+#${btnEditName} {
+${btnCss}
+}
+#${btnEditName}:hover {
+${HtmlMakerCommonCss.btnHoverCssText}
+}
 `.trim();
     }
-    async function makeVideoOptionToolTip() {
-        const toolTipName = HtmlMakerToolTipMgr.MakeUniqueName(`video`, `options`);
+    async function makeVideoCtlToolTip() {
+        const toolTipName = HtmlMakerToolTipMgr.MakeUniqueName(`video`, `controls`);
         const toolTipFind = HtmlMakerToolTipMgr.FindBy(toolTipName);
         if (toolTipFind !== null)
             return null;
@@ -2289,27 +2530,26 @@ ${HtmlMakerCommonCss.btnHoverCssText}
         const toolTipNew = HtmlMakerToolTipMgr.FindBy(toolTipName);
         if (toolTipNew !== null) {
             videoToolTip = toolTipNew;
-            makeVideoActions();
+            makeVideoCtlBtns();
             let uiLabelText = ``;
             toolTipNew.name = toolTipName;
             toolTipNew.SetTitle(uiLabelText);
             toolTipNew.InvisibleAll();
             //toolTipNew.VisibleCpBtn(false)
             //toolTipNew.VisibleActBtn(false)
-            toolTipNew.SetMemo(``, videoCssText());
+            toolTipNew.SetMemo(``, videoCtlCssText());
             toolTipNew.applyCss();
-            //toolTipNew.closeType = HtmlMakerToolTipCloseTypes.None
             toolTipNew.MgrType = HtmlMakerToolTipMgrTypes.NotMgr;
             toolTipNew.heightPx = `100`;
             toolTipNew.Show(document.body); //videoElem.className
             toolTipNew.SetVisible(false);
             toolTipNew.EnableEvents();
-            toolTipNew.EnableFirstVisible(onVideoOptOnFirstVisible);
-            toolTipNew.onChangeVisible = onVideoOptOnChangeVisible;
+            toolTipNew.EnableFirstVisible(onVideoOnFirstVisible);
+            toolTipNew.onChangeVisible = onVideoOnChangeVisible;
         }
         return toolTipNew;
     }
-    videoToolTip = await makeVideoOptionToolTip();
+    videoToolTip = await makeVideoCtlToolTip();
     if (videoToolTip !== null) {
         dockUI.videoToolTip = videoToolTip; //ツールチップUI
         if (env.action === EvonaActions.VideoPlay) {
@@ -2366,6 +2606,11 @@ ${HtmlMakerCommonCss.btnHoverCssText}
     let ytIndex = 0;
     let ytPlayer = null;
     async function createYtPlayer() {
+        if (ytInfos.length === 0) {
+            const msgbox = new EvonaMessageBox;
+            await msgbox.showWait(`「${FileSelect.emoji1}」をタップしてプレイリストを選択してください。`);
+            return;
+        }
         if (ytFirstPlay) {
             ytFirstPlay = false;
             const currentPlayText = await ClipboardHelper.get();
