@@ -2390,9 +2390,9 @@ ${HtmlMakerCommonCss.btnHoverCssText}
                 const ytArray = dataArray;
                 ytInfos.splice(0, ytInfos.length);
                 for (const info of ytArray) {
-                    info.url = convYtUrlPrefix(info.url);
                     if (info.url.length === 0)
                         continue;
+                    info.url = convYtUrlPrefix(info.url);
                     ytInfos.push(info);
                 }
                 ytFirstPlay = true;
