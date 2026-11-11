@@ -217,17 +217,26 @@ export async function bootstrapPlugins() {
     }
 }
 import { ServerTools } from './ServerTools.js';
+import { ElectronTools } from "./ServerTools.js";
 /**攻略サイトインポート */
-export class SiteImporter extends ServerTools {
+export class SiteImporter {
     static prefixImgGetCmd = `chImgGetCmd`;
     static prefixPropGetCmd = `chPropGetCmd`;
     /**キャラ一覧HTML取得 */
     static async doFetchGetHtml(imItem, nsUrl) {
-        const targetUrl = encodeURIComponent(nsUrl.url);
+        const targetUrl = encodeURI(nsUrl.url); //encodeURIComponent(nsUrl.url);
         const fileName = `${imItem.htmlMarker}${nsUrl.ns.substring(3)}.html`;
+        if (ElectronTools.isInElectron) {
+            const cmd = `getHtml`;
+            const arg = `url=${targetUrl}&html=${fileName}`;
+            console.log(`${nsUrl.ns} : request `);
+            const result = await ElectronTools.request(cmd, arg);
+            console.log(`${nsUrl.ns} : サーバーからの応答:`, result);
+            return result;
+        }
         const cmd = `get-html?url=${targetUrl}&html=${fileName}`;
         console.log(`${nsUrl.ns} : request `);
-        const result = await this.request(cmd);
+        const result = await ServerTools.request(cmd);
         console.log(`${nsUrl.ns} : サーバーからの応答:`, result);
         return result;
     }
@@ -241,7 +250,7 @@ export class SiteImporter extends ServerTools {
         const fileName = this.chImgGetCmdZip(imItem);
         const cmd = `nunzip?zip=${fileName}`;
         console.log(`${cmd} : request `);
-        const result = await this.request(cmd);
+        const result = await ServerTools.request(cmd);
         console.log(`${cmd} : サーバーからの応答:`, result);
         return result;
     }
@@ -250,7 +259,7 @@ export class SiteImporter extends ServerTools {
         const fileName = `${this.prefixImgGetCmd}_${imItem.chListMaker}_${nsUrl.ns}.txt`;
         const cmd = `dl-files?list=${fileName}`;
         console.log(`${cmd} : request `);
-        const result = await this.request(cmd);
+        const result = await ServerTools.request(cmd);
         console.log(`${cmd} : サーバーからの応答:`, result);
         return result;
     }
@@ -258,7 +267,7 @@ export class SiteImporter extends ServerTools {
     static async doFetchMvImg() {
         const cmd = `mv-files?ext=png&mvdir=images`;
         console.log(`${cmd} : request `);
-        const result = await this.request(cmd);
+        const result = await ServerTools.request(cmd);
         console.log(`${cmd} : サーバーからの応答:`, result);
         return result;
     }
@@ -266,7 +275,7 @@ export class SiteImporter extends ServerTools {
     static async doFetchRenameImg(nsUrl) {
         const cmd = `rename?from=images&to=images_${nsUrl.ns}`;
         console.log(`${cmd} : request `);
-        const result = await this.request(cmd);
+        const result = await ServerTools.request(cmd);
         console.log(`${cmd} : サーバーからの応答:`, result);
         return result;
     }
@@ -280,7 +289,7 @@ export class SiteImporter extends ServerTools {
         const fileName = this.chPropGetCmdZip(imItem);
         const cmd = `nunzip?zip=${fileName}`;
         console.log(`${cmd} : request `);
-        const result = await this.request(cmd);
+        const result = await ServerTools.request(cmd);
         console.log(`${cmd} : サーバーからの応答:`, result);
         return result;
     }
@@ -289,7 +298,7 @@ export class SiteImporter extends ServerTools {
         const fileName = `${this.prefixPropGetCmd}_${imItem.chListMaker}_${nsUrl.ns}.txt`;
         const cmd = `dl-files?list=${fileName}`;
         console.log(`${cmd} : request `);
-        const result = await this.request(cmd);
+        const result = await ServerTools.request(cmd);
         console.log(`${cmd} : サーバーからの応答:`, result);
         return result;
     }
@@ -297,7 +306,7 @@ export class SiteImporter extends ServerTools {
     static async doFetchMvProp() {
         const cmd = `mv-files?ext=txt&mvdir=status`;
         console.log(`${cmd} : request `);
-        const result = await this.request(cmd);
+        const result = await ServerTools.request(cmd);
         console.log(`${cmd} : サーバーからの応答:`, result);
         return result;
     }
@@ -305,7 +314,7 @@ export class SiteImporter extends ServerTools {
     static async doFetchRenameProp(nsUrl) {
         const cmd = `rename?from=status&to=status_${nsUrl.ns}`;
         console.log(`${cmd} : request `);
-        const result = await this.request(cmd);
+        const result = await ServerTools.request(cmd);
         console.log(`${cmd} : サーバーからの応答:`, result);
         return result;
     }
@@ -322,7 +331,7 @@ export class SiteImporter extends ServerTools {
         const cmd = `set-exclude`;
         const bodyText = JSON.stringify({ excludeList: excludeFiles }); // ⚡️ 配列をJSON文字列にして直列送信！
         console.log(`${cmd} : request `);
-        const result = await this.post(cmd, bodyText);
+        const result = await ServerTools.post(cmd, bodyText);
         console.log(`${cmd} : サーバーからの応答:`, result);
         return result;
         /*

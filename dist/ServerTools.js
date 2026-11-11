@@ -69,4 +69,31 @@ export class ServerTools {
         return null;
     }
 }
+/**Electronツール */
+export class ElectronTools {
+    static debug = true;
+    /** Electron起動かどうか */
+    static get isInElectron() {
+        //const isElectron = typeof window !== 'undefined' && window.process && window.process.type === 'renderer';
+        /*
+        const isElectron = typeof window !== 'undefined' &&
+            window.process &&
+            window.process.type === 'renderer';
+        return isElectron as boolean
+        */
+        return window.EVONA_CONFIG.isElectron;
+    }
+    static async request(cmd, arg, onFail = false) {
+        if (!this.isInElectron) {
+            if (this.debug)
+                console.log(`**${cmd}::${arg}::not on electron**`, onFail);
+            return onFail;
+        }
+        const { ipcRenderer } = window.require('electron');
+        const result = await ipcRenderer.invoke('start-request', cmd, arg);
+        if (this.debug)
+            console.log(`**${cmd}::${arg}**`, result);
+        return result;
+    }
+}
 //# sourceMappingURL=ServerTools.js.map

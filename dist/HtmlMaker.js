@@ -8146,6 +8146,7 @@ export class FileSelect {
         if (this.fileInput !== null) {
             this.parentElem.removeChild(this.fileInput);
             this.fileInput.removeEventListener('change', this.onChange);
+            this.fileInput.removeEventListener('cancel', this.onCancelInternal);
             this.fileInput.remove();
             this.fileInput = null;
         }
