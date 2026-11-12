@@ -3,11 +3,17 @@ export class ytInfo {
     title = ``;
 }
 export const ytUrlPrefix = `https://www.youtube.com/watch?v=`;
+export const ytUrlShortPrefix = `https://youtu.be/`;
 export function isYtUrlPrefix(url) {
     return url.startsWith(ytUrlPrefix);
 }
+export function isYtUrlShortPrefix(url) {
+    return url.startsWith(ytUrlShortPrefix);
+}
 export function convYtUrlPrefix(url) {
     if (isYtUrlPrefix(url))
+        return url;
+    if (isYtUrlShortPrefix(url))
         return url;
     return ytUrlPrefix + url;
 }
