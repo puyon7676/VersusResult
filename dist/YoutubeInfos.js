@@ -17,6 +17,14 @@ export function convYtUrlPrefix(url) {
         return url;
     return ytUrlPrefix + url;
 }
+export function convYtUrlShortPrefix(url) {
+    if (isYtUrlShortPrefix(url)) {
+        url = url.substring(ytUrlShortPrefix.length);
+        url = url.substring(0, 11);
+        return url;
+    }
+    return url;
+}
 export const ytInfos = [
 /*
 { url: 'https://www.youtube.com/watch?v=_ey15xZIZxw',

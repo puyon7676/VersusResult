@@ -10,7 +10,7 @@ import { DragDropHelper } from "./HtmlMaker.js";
 import { FileSelect } from "./HtmlMaker.js";
 import { ClipboardHelper } from "./ClipboardHelper.js";
 import { ElectronTools } from "./ServerTools.js";
-import { ytInfos, ytInfo, convYtUrlPrefix } from "./YoutubeInfos.js";
+import { ytInfos, ytInfo, isYtUrlPrefix, isYtUrlShortPrefix, convYtUrlPrefix, convYtUrlShortPrefix } from "./YoutubeInfos.js";
 export class VideoPlay {
     //ローカル動画再生（videoタグ）
     isAvailVideoFiles(files) {
@@ -681,7 +681,11 @@ ${HtmlMakerCommonCss.btnHoverCssText}
                 for (const info of ytArray) {
                     if (info.url.length === 0)
                         continue;
-                    info.url = convYtUrlPrefix(info.url);
+                    if (isYtUrlPrefix(info.url)) { }
+                    else if (isYtUrlShortPrefix(info.url)) { }
+                    else {
+                        info.url = convYtUrlPrefix(info.url);
+                    }
                     ytInfos.push(info);
                 }
                 this.ytFirstPlay = true;
@@ -890,6 +894,10 @@ ${HtmlMakerCommonCss.btnHoverCssText}
     */
     /*YouTube再生（YouTube API） */
     ytVid(url) {
+        if (isYtUrlShortPrefix(url)) {
+            url = convYtUrlShortPrefix(url);
+            return url;
+        }
         const pos = url.indexOf(`?v=`);
         if (pos === -1)
             return ``;
