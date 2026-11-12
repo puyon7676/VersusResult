@@ -248,6 +248,14 @@ export class SiteImporter {
     /**imgダウンロード指示Zip解凍 */
     static async doFetchUnzipImg(imItem) {
         const fileName = this.chImgGetCmdZip(imItem);
+        if (ElectronTools.isInElectron) {
+            const cmd = `nunzip`;
+            const arg = `zip=${fileName}`;
+            console.log(`${cmd} : request `);
+            const result = await ElectronTools.request(cmd, arg);
+            console.log(`${cmd} : サーバーからの応答:`, result);
+            return result;
+        }
         const cmd = `nunzip?zip=${fileName}`;
         console.log(`${cmd} : request `);
         const result = await ServerTools.request(cmd);
@@ -257,6 +265,14 @@ export class SiteImporter {
     /**img一括ダウンロード(NS単位) */
     static async doFetchDlImg(imItem, nsUrl) {
         const fileName = `${this.prefixImgGetCmd}_${imItem.chListMaker}_${nsUrl.ns}.txt`;
+        if (ElectronTools.isInElectron) {
+            const cmd = `dlFiles`;
+            const arg = `list=${fileName}`;
+            console.log(`${cmd} : request `);
+            const result = await ElectronTools.request(cmd, arg);
+            console.log(`${cmd} : サーバーからの応答:`, result);
+            return result;
+        }
         const cmd = `dl-files?list=${fileName}`;
         console.log(`${cmd} : request `);
         const result = await ServerTools.request(cmd);
@@ -265,6 +281,14 @@ export class SiteImporter {
     }
     /**imgサブフォルダへ一括移動(NS単位) */
     static async doFetchMvImg() {
+        if (ElectronTools.isInElectron) {
+            const cmd = `mvFiles`;
+            const arg = `ext=png&mvdir=images`;
+            console.log(`${cmd} : request `);
+            const result = await ElectronTools.request(cmd, arg);
+            console.log(`${cmd} : サーバーからの応答:`, result);
+            return result;
+        }
         const cmd = `mv-files?ext=png&mvdir=images`;
         console.log(`${cmd} : request `);
         const result = await ServerTools.request(cmd);
@@ -273,6 +297,14 @@ export class SiteImporter {
     }
     /**imgサブフォルダを属性別フォルダ名にリネーム(NS単位) */
     static async doFetchRenameImg(nsUrl) {
+        if (ElectronTools.isInElectron) {
+            const cmd = `rename`;
+            const arg = `from=images&to=images_${nsUrl.ns}`;
+            console.log(`${cmd} : request `);
+            const result = await ElectronTools.request(cmd, arg);
+            console.log(`${cmd} : サーバーからの応答:`, result);
+            return result;
+        }
         const cmd = `rename?from=images&to=images_${nsUrl.ns}`;
         console.log(`${cmd} : request `);
         const result = await ServerTools.request(cmd);
@@ -287,6 +319,14 @@ export class SiteImporter {
     /**キャラステータスダウンロード指示Zip解凍 */
     static async doFetchUnzipProp(imItem) {
         const fileName = this.chPropGetCmdZip(imItem);
+        if (ElectronTools.isInElectron) {
+            const cmd = `nunzip`;
+            const arg = `zip=${fileName}`;
+            console.log(`${cmd} : request `);
+            const result = await ElectronTools.request(cmd, arg);
+            console.log(`${cmd} : サーバーからの応答:`, result);
+            return result;
+        }
         const cmd = `nunzip?zip=${fileName}`;
         console.log(`${cmd} : request `);
         const result = await ServerTools.request(cmd);
@@ -296,6 +336,14 @@ export class SiteImporter {
     /**キャラステータス一括ダウンロード(NS単位) */
     static async doFetchDlProp(imItem, nsUrl) {
         const fileName = `${this.prefixPropGetCmd}_${imItem.chListMaker}_${nsUrl.ns}.txt`;
+        if (ElectronTools.isInElectron) {
+            const cmd = `dlFiles`;
+            const arg = `list=${fileName}`;
+            console.log(`${cmd} : request `);
+            const result = await ElectronTools.request(cmd, arg);
+            console.log(`${cmd} : サーバーからの応答:`, result);
+            return result;
+        }
         const cmd = `dl-files?list=${fileName}`;
         console.log(`${cmd} : request `);
         const result = await ServerTools.request(cmd);
@@ -304,6 +352,14 @@ export class SiteImporter {
     }
     /**キャラステータスサブフォルダへ一括移動(NS単位) */
     static async doFetchMvProp() {
+        if (ElectronTools.isInElectron) {
+            const cmd = `mvFiles`;
+            const arg = `ext=txt&mvdir=status`;
+            console.log(`${cmd} : request `);
+            const result = await ElectronTools.request(cmd, arg);
+            console.log(`${cmd} : サーバーからの応答:`, result);
+            return result;
+        }
         const cmd = `mv-files?ext=txt&mvdir=status`;
         console.log(`${cmd} : request `);
         const result = await ServerTools.request(cmd);
@@ -312,6 +368,14 @@ export class SiteImporter {
     }
     /**キャラステータスサブフォルダを属性別フォルダ名にリネーム(NS単位) */
     static async doFetchRenameProp(nsUrl) {
+        if (ElectronTools.isInElectron) {
+            const cmd = `rename`;
+            const arg = `from=status&to=status_${nsUrl.ns}`;
+            console.log(`${cmd} : request `);
+            const result = await ElectronTools.request(cmd, arg);
+            console.log(`${cmd} : サーバーからの応答:`, result);
+            return result;
+        }
         const cmd = `rename?from=status&to=status_${nsUrl.ns}`;
         console.log(`${cmd} : request `);
         const result = await ServerTools.request(cmd);
@@ -328,8 +392,17 @@ export class SiteImporter {
             excludeFiles.push(fileName1);
             excludeFiles.push(fileName2);
         }
-        const cmd = `set-exclude`;
         const bodyText = JSON.stringify({ excludeList: excludeFiles }); // ⚡️ 配列をJSON文字列にして直列送信！
+        if (ElectronTools.isInElectron) {
+            const cmd = `setExclude`;
+            const arg = bodyText;
+            console.log(`${cmd} : request `);
+            const result = await ElectronTools.request(cmd, arg);
+            console.log(`${cmd} : サーバーからの応答:`, result);
+            return result;
+        }
+        const cmd = `set-exclude`;
+        //const bodyText = JSON.stringify({ excludeList: excludeFiles }) // ⚡️ 配列をJSON文字列にして直列送信！
         console.log(`${cmd} : request `);
         const result = await ServerTools.post(cmd, bodyText);
         console.log(`${cmd} : サーバーからの応答:`, result);
@@ -389,14 +462,16 @@ export class SiteImporter {
             }
         }
     }
+    curlOpt = `-L -A "Mozilla/5.0" --ssl-no-revoke  --connect-timeout 10 --retry 3 --retry-delay 2 --retry-connrefused`;
     imgCurlZipFile = ``;
     imgCurlZip = new window.JSZip();
     makeImgCurlCmd(chListSave, saveTextFile) {
         //キャラ画像作成用コマンドファイルは属性毎で１ファイル(プレーンテキスト圧縮なし)で保存
         let cmdTextAll = ``;
         for (const ch of chListSave) {
+            let destPath = ElectronTools.setPath + ch.iconFileName;
             let echoCmd = `echo now downloading "${ch.name}"`;
-            let cmdText = echoCmd + `\r\n` + `curl -L -A "Mozilla/5.0" --ssl-no-revoke "${ch.iconURL}" > "${ch.iconFileName}"`;
+            let cmdText = echoCmd + `\r\n` + `curl ${this.curlOpt} "${ch.iconURL}" > "${destPath}"`;
             if (cmdTextAll === ``)
                 cmdTextAll += cmdText;
             else
@@ -411,8 +486,9 @@ export class SiteImporter {
         //キャラ詳細作成用コマンドファイルは属性毎で１ファイル(プレーンテキスト圧縮なし)で保存
         let cmdTextAll = ``;
         for (const ch of chListSave) {
+            let destPath = ElectronTools.setPath + `${propCurlType}Status_${ch.id}.txt`;
             let echoCmd = `echo now downloading "${ch.name}"`;
-            let cmdText = echoCmd + `\r\n` + `curl -L -A "Mozilla/5.0" --ssl-no-revoke "${ch.contentURL}" > "${propCurlType}Status_${ch.id}.txt"`;
+            let cmdText = echoCmd + `\r\n` + `curl ${this.curlOpt} "${ch.contentURL}" > "${destPath}"`;
             if (cmdTextAll === ``)
                 cmdTextAll += cmdText;
             else

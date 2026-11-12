@@ -286,7 +286,12 @@ export async function mainNormal(env) {
     const chStatusListFile = env.chStatusListFile;
     const chHtmlListFile = env.chHtmlListFile;
     const chRisticWdFile = env.chRisticWdFile;
-    ElectronTools.request(`setPath`, env.currentUserHome);
+    ElectronTools.request(`setPath`, `${env.currentUserHome}_dltemp_/`);
+    const excludeFiles = new Array;
+    excludeFiles.push(`fileName1`);
+    excludeFiles.push(`fileName2`);
+    const bodyText = JSON.stringify({ excludeList: excludeFiles }); // ⚡️ 配列をJSON文字列にして直列送信！
+    ElectronTools.request(`setExclude`, bodyText);
     //スプラッシュUI初期化
     const fsHtmlMaker = new HtmlMaker;
     const splashName = `splash-screen`;
