@@ -72,6 +72,7 @@ export class ServerTools {
 /**Electronツール */
 export class ElectronTools {
     static debug = true;
+    static setPath = ``;
     /** Electron起動かどうか */
     static get isInElectron() {
         //const isElectron = typeof window !== 'undefined' && window.process && window.process.type === 'renderer';
@@ -93,7 +94,41 @@ export class ElectronTools {
         const result = await ipcRenderer.invoke('start-request', cmd, arg);
         if (this.debug)
             console.log(`**${cmd}::${arg}**`, result);
+        if (cmd === `setPath`)
+            this.setPath = arg;
         return result;
+    }
+    static getFullPath(file) {
+        if (!this.isInElectron) {
+            if (this.debug)
+                console.log(`not on electron**`, file);
+            return null;
+        }
+        const { webUtils } = window.require('electron');
+        const fullPath = webUtils ? webUtils.getPathForFile(file) : file.path;
+        return fullPath;
+    }
+    static getFullPathMap(files) {
+        if (!this.isInElectron) {
+            if (this.debug)
+                console.log(`not on electron**`, files);
+            return null;
+        }
+        const { webUtils } = window.require('electron');
+        const resPathMap = new Map;
+        if (webUtils) {
+            for (const file of files) {
+                const fullPath = webUtils.getPathForFile(file);
+                resPathMap.set(file, fullPath);
+            }
+        }
+        else {
+            for (const file of files) {
+                const fullPath = file.path;
+                resPathMap.set(file, fullPath);
+            }
+        }
+        return resPathMap;
     }
 }
 //# sourceMappingURL=ServerTools.js.map

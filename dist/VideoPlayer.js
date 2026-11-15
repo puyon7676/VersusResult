@@ -5,6 +5,7 @@ import { HtmlMakerOptionInput } from "./HtmlMaker.js";
 import { HtmlMakerChoiceItem, HtmlMakerChoice, HtmlMakerChoiceTwinModes, HtmlMakerChoiceHeaderModes } from "./HtmlMaker.js";
 import { HtmlMakerTable } from "./HtmlMaker.js";
 import { HtmlMakerToolTipMgr, HtmlMakerToolTipCloseTypes, HtmlMakerToolTipMgrTypes } from "./HtmlMaker.js";
+import { HtmlMakerCanvasTool } from "./HtmlMaker.js";
 import { EvonaMessageBox, MessageBoxResultTypes } from "./MessageBox.js";
 import { DragDropHelper } from "./HtmlMaker.js";
 import { FileSelect } from "./HtmlMaker.js";
@@ -78,6 +79,7 @@ export class VideoPlay {
         this.videoFile = file.name;
         const url = URL.createObjectURL(file);
         this.videoElem.src = url;
+        this.videoFullPath = ElectronTools.getFullPath(file) || ``;
         this.repeatMap.set(file, url);
     }
     revokeSrc() {
@@ -96,6 +98,7 @@ export class VideoPlay {
         this.playList.sort(() => Math.random() - 0.5);
     }
     async playNext() {
+        this.resetVideoEdit();
         const existFile = this.revokeSrc();
         if (this.playList.length === 0 && !this.canRepaet) {
             this.videoFile = ``;
@@ -149,6 +152,7 @@ export class VideoPlay {
     isPinP = false;
     isSeekEnd = false;
     videoFile = ``;
+    videoFullPath = ``;
     playList = new Array;
     repeatMap = new Map;
     videoCssName = ``;
@@ -181,6 +185,8 @@ export class VideoPlay {
     env;
     dockUI;
     drogdrop = new DragDropHelper();
+    fsHtmlMaker = new HtmlMaker;
+    splashName = `splash-screen`;
     setup(env, dockUI) {
         this.env = env;
         this.dockUI = dockUI;
@@ -190,9 +196,13 @@ export class VideoPlay {
         this.drogdrop.onDropFiles = this.doDropVideoFiles;
         this.drogdrop.Start(this.videoCssName);
     }
-    async doDropVideoFiles(elem, files) {
+    doDropVideoFiles = async (elem, files) => {
         if (this.isAvailVideoFiles(files) === false)
             return;
+        if (ElectronTools.isInElectron) {
+            const pathMap = ElectronTools.getFullPathMap(files);
+            console.log(pathMap);
+        }
         let isFirstPlay = this.playList.length === 0 && this.videoFile === ``;
         let isFirstMsg = true;
         if (!isFirstPlay) {
@@ -230,7 +240,9 @@ export class VideoPlay {
                 msgbox.setParent(parentClassName);
                 let res = MessageBoxResultTypes.None;
                 res = await msgbox.showWait(`${this.videoFile}<br>ファイル名を検索して続きの時間をコピーすると再開します`);
-                const currentTimeText = await ClipboardHelper.get();
+                let currentTimeText = await ClipboardHelper.get() || `0`;
+                const currentTimeArray = currentTimeText.split(`\t`);
+                currentTimeText = currentTimeArray[currentTimeArray?.length - 1];
                 currentTime = isNaN(Number(currentTimeText)) ? 0 : Number(currentTimeText);
             }
             this.setSrc(file);
@@ -243,12 +255,13 @@ export class VideoPlay {
             //表示中なら内容を更新
             this.makePlayListCtl();
         }
-    }
-    //
+    };
+    //ここから共通部分
     isInElectron = ElectronTools.isInElectron;
-    videoToolTip = null;
-    playEditToolTip = null;
-    playListCtl = null;
+    videoToolTip = null; //ローカル動画再生
+    videoEditToolTip = null; //ローカル動画編集
+    playEditToolTip = null; //プレイリスト編集
+    playListCtl = null; //プレイリスト表示
     currentPlayMark = `🎦`;
     setPlayListItems;
     setVideoPlayListItems(choiceItems) {
@@ -312,14 +325,25 @@ export class VideoPlay {
                 if (ev.result !== ``) {
                     const splited = ev.result.split(`-`);
                     if (splited.length >= 2) {
-                        const existFile = this.revokeSrc();
                         const playIndex = Number(splited[splited.length - 1]);
-                        const videoInfo = playIndex !== 0 ? this.playList[playIndex - 1] : existFile;
-                        this.setSrc(videoInfo);
-                        await this.videoElem.play();
-                        console.log(`**update before**`, this.playList);
-                        this.playList[playIndex - 1] = existFile;
-                        console.log(`**update after** `, this.playList);
+                        if (this.dockUI.selectedPlayer === this.videoElem) {
+                            const existFile = this.revokeSrc();
+                            const videoInfo = playIndex !== 0 ? this.playList[playIndex - 1] : existFile;
+                            this.setSrc(videoInfo);
+                            await this.videoElem.play();
+                            console.log(`**update before**`, this.playList);
+                            this.playList[playIndex - 1] = existFile;
+                            console.log(`**update after** `, this.playList);
+                            this.resetVideoEdit();
+                            if (this.videoEditToolTip !== null)
+                                this.videoEditToolTip.SetVisible(true);
+                        }
+                        else {
+                            this.ytDestory();
+                            this.ytIndex = playIndex;
+                            await this.createYtPlayer();
+                            this.ytPlayListUpdate();
+                        }
                     }
                 }
             }
@@ -327,7 +351,7 @@ export class VideoPlay {
         });
         this.playListCtl = choice;
     }
-    //
+    //ここからプレイリスト編集UI
     setPlayEditTableRow(cellIndex, rowIndex, title, url, table) {
         const titleCssClassName = this.plEditTitleCssName();
         const inputTitle = new HtmlMakerOptionInput();
@@ -396,6 +420,25 @@ export class VideoPlay {
         const rows = this.playEditToolTip.TableRows();
         if (rows === null)
             return;
+        let isSaveDl = true;
+        if (ElectronTools.isInElectron) {
+            const msgbox = new EvonaMessageBox;
+            msgbox.setYesNo();
+            const saveMsg = `【はい】　　アプリフォルダへ保存　　　`
+                + `<br>`
+                + `【いいえ】　ダウンロードフォルダへ保存`;
+            const res = await msgbox.showWait(`再生リストを保存しますか？<br>${saveMsg}`);
+            switch (res) {
+                case MessageBoxResultTypes.Cancel:
+                    return;
+                case MessageBoxResultTypes.Yes:
+                    isSaveDl = false;
+                    break;
+                case MessageBoxResultTypes.No:
+                    isSaveDl = true;
+                    break;
+            }
+        }
         const plArray = new Array;
         for (const row of rows) {
             const texts = this.playEditToolTip.RowTexts(row);
@@ -405,10 +448,18 @@ export class VideoPlay {
             plArray.push(info);
         }
         const plJson = JSON.stringify(plArray, null, 2);
+        if (isSaveDl) {
+            const plFile = `playList.ytpl`;
+            this.downloadVideoInfoFile(plFile, plJson);
+            const msgbox = new EvonaMessageBox;
+            await msgbox.showWait(`ダウンロードフォルダへプレイリストを保存しました。<br>${plFile}`);
+            return;
+        }
         const plFile = `playList.ytpl`;
-        this.downloadVideoInfoFile(plFile, plJson);
+        const bodyText = JSON.stringify({ file: plFile, list: plJson });
+        ElectronTools.request(`saveJson`, bodyText);
         const msgbox = new EvonaMessageBox;
-        await msgbox.showWait(`ダウンロードフォルダへプレイリストを保存しました。<br>${plFile}`);
+        await msgbox.showWait(`アプリフォルダへプレイリストを保存しました。<br>${plFile}`);
     };
     onPlayEditButtonClick = async (rowindex, btn, div, tbl, row, col) => {
         console.log(`onPlayEditButtonClick`, rowindex, btn, div, tbl, row, col);
@@ -564,21 +615,7 @@ export class VideoPlay {
     playEditCssText() {
         const btnUpName = this.plEditUpCssName();
         const btnDnName = this.plEditDnCssName();
-        const btnCss = `
-background: ${HtmlMakerCommonCss.normBkColor};
-color: black;
-border: 1px solid #777;
-border-radius: 3px;
-width: 24px;
-height: 24px;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-font-size: 12px;
-padding-bottom: 4px; /* 下にパディングを入れて、文字を上に押し上げる */
-cursor: pointer;
-transition: background 0.2s;
-`;
+        const btnCss = this.commonBtnCssText();
         return `
 [class*="${btnUpName}"] {
 ${btnCss}
@@ -612,7 +649,237 @@ ${HtmlMakerCommonCss.btnHoverCssText}
     plEditDnCssName() {
         return `playEdit-down`;
     }
-    //
+    //ここからローカル動画編集UI
+    startCanvasTool = null;
+    endCanvasTool = null;
+    startTime = -1;
+    endTime = -1;
+    onVideoEditButtonClick = async (rowindex, btn, div, tbl, row, col) => {
+        console.log(`onVideoEditButtonClick`, rowindex, btn, div, tbl, row, col);
+        if (rowindex <= -1)
+            return;
+        switch (btn.className) {
+            case this.vidEditStartBtnName():
+                if (this.startCanvasTool !== null) {
+                    this.startTime = this.videoElem.currentTime;
+                    this.startCanvasTool.snapshotFromVideoElem(this.videoElem);
+                }
+                break;
+            case this.vidEditEndBtnName():
+                if (this.endCanvasTool !== null) {
+                    this.endTime = this.videoElem.currentTime;
+                    this.endCanvasTool.snapshotFromVideoElem(this.videoElem);
+                }
+                break;
+        }
+    };
+    onVideoEditActionReq = async () => {
+        const stime = formatTimeWithMs(this.startTime * 1000);
+        const etime = formatTimeWithMs(this.endTime * 1000);
+        let toFile = this.videoFile;
+        const pos = toFile.lastIndexOf(`.`);
+        if (pos !== -1) {
+            toFile = toFile.substring(0, pos) + `_copy.mp4`;
+        }
+        console.log(stime, etime, toFile);
+        if (this.videoFullPath.length === 0) {
+            const msgbox = new EvonaMessageBox();
+            await msgbox.showWait("この機能は Electron 環境でのみ動作します。");
+            return;
+        }
+        if (this.startTime < 0 || this.endTime < 0) {
+            const msgbox = new EvonaMessageBox();
+            await msgbox.showWait("切り出し位置を確定してください。");
+            return;
+        }
+        function formatTimeWithMs(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            const milliseconds = Math.floor(ms) % 1000;
+            const hh = String(hours).padStart(2, '0');
+            const mm = String(minutes).padStart(2, '0');
+            const ss = String(seconds).padStart(2, '0');
+            const sss = String(milliseconds).padStart(3, '0');
+            return `${hh}:${mm}:${ss}.${sss}`;
+        }
+        const fsHtmlMaker = this.fsHtmlMaker;
+        const splashName = this.splashName;
+        const msgElem = fsHtmlMaker.getFullScreenMsgElem(splashName);
+        fsHtmlMaker.showFullScreenCss(splashName);
+        msgElem.innerHTML = `切り出し中 [${toFile}] ...`;
+        const bodyText = JSON.stringify({ file: this.videoFullPath, stime: stime, etime: etime, toFile: toFile });
+        await ElectronTools.request(`mp4_splice`, bodyText);
+        fsHtmlMaker.hideFullScreenCss(splashName);
+    };
+    makeVideoEditTable() {
+        //テーブル作成
+        const nCanvas = 2;
+        const nCol = 2;
+        const table = new HtmlMakerTable();
+        table.makeDim(nCol, nCanvas);
+        //カラム定義
+        let rowIndex = 0;
+        let cellIndex = 0;
+        const startCanvasClassName = this.vidEditStartCanvasName();
+        table.getCell(cellIndex, rowIndex).typeInfo.setPlain(``);
+        table.getCell(cellIndex, rowIndex).className = startCanvasClassName;
+        table.getCell(cellIndex, rowIndex).tdName = `td_` + startCanvasClassName;
+        table.getCell(cellIndex, rowIndex).typeInfo.using.itemId = rowIndex + table.firstRowIndex;
+        cellIndex++;
+        const endCanvasClassName = this.vidEditEndCanvasName();
+        table.getCell(cellIndex, rowIndex).typeInfo.setPlain(``);
+        table.getCell(cellIndex, rowIndex).className = endCanvasClassName;
+        table.getCell(cellIndex, rowIndex).tdName = `td_` + endCanvasClassName;
+        table.getCell(cellIndex, rowIndex).typeInfo.using.itemId = rowIndex + table.firstRowIndex;
+        rowIndex = 1;
+        cellIndex = 0;
+        const startBtnClassName = this.vidEditStartBtnName();
+        table.getCell(cellIndex, rowIndex).typeInfo.setButton(`開始位置`);
+        table.getCell(cellIndex, rowIndex).className = startBtnClassName;
+        table.getCell(cellIndex, rowIndex).tdName = `td_` + startBtnClassName;
+        table.getCell(cellIndex, rowIndex).typeInfo.using.itemId = rowIndex + table.firstRowIndex;
+        cellIndex++;
+        const endBtnClassName = this.vidEditEndBtnName();
+        table.getCell(cellIndex, rowIndex).typeInfo.setButton(`終了位置`);
+        table.getCell(cellIndex, rowIndex).className = endBtnClassName;
+        table.getCell(cellIndex, rowIndex).tdName = `td_` + endBtnClassName;
+        table.getCell(cellIndex, rowIndex).typeInfo.using.itemId = rowIndex + table.firstRowIndex;
+        //行テンプレート初期化
+        table.makeRowTemplate(this.vidEditTableRowCssName());
+        return table;
+    }
+    makeVideoEditCanvas(toolTipNew) {
+        const tds = toolTipNew.RowTds(0);
+        if (tds === null)
+            return;
+        const canvasStartName = this.vidEditStartCanvasName();
+        const canvasEndName = this.vidEditEndCanvasName();
+        const tdStart = tds.get(`td_` + canvasStartName);
+        if (tdStart === undefined)
+            return;
+        const tdEnd = tds.get(`td_` + canvasEndName);
+        if (tdEnd === undefined)
+            return;
+        const startCanvasTool = new HtmlMakerCanvasTool();
+        const startCanvas = startCanvasTool.create2dContext();
+        startCanvas.className = canvasStartName;
+        startCanvas.id = canvasStartName;
+        startCanvas.width = 128; //videoElem.videoWidth
+        startCanvas.height = 128; //videoElem.videoHeight
+        const endCanvasTool = new HtmlMakerCanvasTool();
+        const endCanvas = endCanvasTool.create2dContext();
+        endCanvas.className = canvasEndName;
+        endCanvas.id = canvasEndName;
+        endCanvas.width = 128; //videoElem.videoWidth
+        endCanvas.height = 128; //videoElem.videoHeight
+        tdStart.appendChild(startCanvas);
+        tdEnd.appendChild(endCanvas);
+        this.startCanvasTool = startCanvasTool;
+        this.endCanvasTool = endCanvasTool;
+    }
+    async makeVideoEditCtlToolTip() {
+        const toolTipName = HtmlMakerToolTipMgr.MakeUniqueName(`video`, `edit`);
+        const toolTipFind = HtmlMakerToolTipMgr.FindBy(toolTipName);
+        if (toolTipFind !== null)
+            return null;
+        HtmlMakerToolTipMgr.Add(toolTipName, HtmlMakerToolTipCloseTypes.InVisible);
+        const toolTipNew = HtmlMakerToolTipMgr.FindBy(toolTipName);
+        if (toolTipNew !== null) {
+            const table = await this.makeVideoEditTable();
+            let uiLabelText = `部分切り出し`;
+            toolTipNew.name = toolTipName;
+            toolTipNew.SetTitle(uiLabelText);
+            toolTipNew.EnableAction(`保存`, this.onVideoEditActionReq);
+            //toolTipNew.InvisibleAll()
+            toolTipNew.VisibleCpBtn(false);
+            toolTipNew.VisibleMgrBtn(false);
+            toolTipNew.SetTable(table, this.videoEditCssText());
+            toolTipNew.heightPx = `400`;
+            toolTipNew.applyCss();
+            toolTipNew.MgrType = HtmlMakerToolTipMgrTypes.NotMgr;
+            toolTipNew.Show(document.body); //videoElem.className
+            toolTipNew.SetVisible(false);
+            toolTipNew.EnableEvents();
+            toolTipNew.onButtonClicked = this.onVideoEditButtonClick;
+            this.makeVideoEditCanvas(toolTipNew);
+        }
+        return toolTipNew;
+    }
+    videoEditCssText() {
+        const canvasStartName = this.vidEditStartCanvasName();
+        const canvasEndName = this.vidEditEndCanvasName();
+        const btnStartName = this.vidEditStartBtnName();
+        const btnEndName = this.vidEditEndBtnName();
+        const canvasCss = `
+background: ${HtmlMakerCommonCss.normBkColor};
+color: black;
+border: 1px solid #777;
+cursor: pointer;
+transition: background 0.2s;
+`;
+        const btnCss = `
+background: ${HtmlMakerCommonCss.normBkColor};
+color: black;
+border: 1px solid #777;
+border-radius: 3px;
+width: 100%;
+height: 28px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-size: 14px;
+padding-bottom: 4px; /* 下にパディングを入れて、文字を上に押し上げる */
+cursor: pointer;
+transition: background 0.2s;
+`;
+        return `
+[class="${canvasStartName}"] {
+${canvasCss}
+}
+[class="${canvasEndName}"] {
+${canvasCss}
+}
+[class*="${btnStartName}"] {
+${btnCss}
+}
+[class*="${btnStartName}"]:hover {
+${HtmlMakerCommonCss.btnHoverCssText}
+}
+[class*="${btnEndName}"] {
+${btnCss}
+}
+[class*="${btnEndName}"]:hover {
+${HtmlMakerCommonCss.btnHoverCssText}
+}
+`.trim();
+    }
+    vidEditTableRowCssName() {
+        return `videoEdit-row`;
+    }
+    vidEditStartCanvasName() {
+        return `videoEdit-start-canvas`;
+    }
+    vidEditEndCanvasName() {
+        return `videoEdit-end-canvas`;
+    }
+    vidEditStartBtnName() {
+        return `videoEdit-start-btn`;
+    }
+    vidEditEndBtnName() {
+        return `videoEdit-end-btn`;
+    }
+    resetVideoEdit() {
+        if (this.videoEditToolTip !== null) {
+            this.videoEditToolTip.SetVisible(false);
+            if (this.startCanvasTool !== null)
+                this.startCanvasTool.clear();
+            if (this.endCanvasTool !== null)
+                this.endCanvasTool.clear();
+        }
+    }
+    //ここからローカル動画再生UI
     onVideoOnFirstVisible = async () => {
         if (this.videoToolTip === null)
             return;
@@ -800,21 +1067,7 @@ ${HtmlMakerCommonCss.btnHoverCssText}
         const btnNextName = `${this.videoNextButton.className}`;
         const btnListName = `${this.videoListButton.className}`;
         const btnEditName = `${this.videoEditButton.className}`;
-        const btnCss = `
-background: ${HtmlMakerCommonCss.normBkColor};
-color: black;
-border: 1px solid #777;
-border-radius: 3px;
-width: 24px;
-height: 24px;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-font-size: 12px;
-padding-bottom: 4px; /* 下にパディングを入れて、文字を上に押し上げる */
-cursor: pointer;
-transition: background 0.2s;
-`;
+        const btnCss = this.commonBtnCssText();
         return `
 #${btnOpenName} {
 ${btnCss}
@@ -862,20 +1115,37 @@ ${HtmlMakerCommonCss.btnHoverCssText}
             toolTipNew.name = toolTipName;
             toolTipNew.SetTitle(uiLabelText);
             toolTipNew.InvisibleAll();
-            //toolTipNew.VisibleCpBtn(false)
-            //toolTipNew.VisibleActBtn(false)
             toolTipNew.SetMemo(``, this.videoCtlCssText());
             toolTipNew.applyCss();
             toolTipNew.MgrType = HtmlMakerToolTipMgrTypes.NotMgr;
             toolTipNew.heightPx = `100`;
-            toolTipNew.Show(document.body); //videoElem.className
+            toolTipNew.Show(document.body);
             toolTipNew.SetVisible(false);
             toolTipNew.EnableEvents();
             toolTipNew.EnableFirstVisible(this.onVideoOnFirstVisible);
             toolTipNew.onChangeVisible = this.onVideoOnChangeVisible;
             this.playEditToolTip = await this.makePlayEditCtlToolTip();
+            this.videoEditToolTip = await this.makeVideoEditCtlToolTip();
         }
         return toolTipNew;
+    }
+    commonBtnCssText() {
+        const btnCss = `
+background: ${HtmlMakerCommonCss.normBkColor};
+color: black;
+border: 1px solid #777;
+border-radius: 3px;
+width: 24px;
+height: 24px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-size: 12px;
+padding-bottom: 4px; /* 下にパディングを入れて、文字を上に押し上げる */
+cursor: pointer;
+transition: background 0.2s;
+`.trim();
+        return btnCss;
     }
     /*YouTube再生（iframe）
     const iframeElem = document.createElement(`iframe`)
@@ -1048,7 +1318,7 @@ ${HtmlMakerCommonCss.btnHoverCssText}
             playIndex++;
             const itemMedia = new HtmlMakerChoiceItem();
             itemMedia.key = `${info.url}-${playIndex}`;
-            itemMedia.text = `${info.title} ${this.currentPlayMark}`;
+            itemMedia.text = info.title; //`${info.title} ${this.currentPlayMark}`
             choiceItems.push(itemMedia);
         }
     }

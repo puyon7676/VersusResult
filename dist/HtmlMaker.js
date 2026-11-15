@@ -413,6 +413,22 @@ export class HtmlMakerCanvasTool {
         const metrics = this.ctx.measureText(text);
         return metrics.width; // ➔ 例：「124.5px」のようなガチの物理サイズが返ってくる！！！
     }
+    snapshotFromVideoElem(videoElem) {
+        if (this.canvas === null)
+            return false;
+        if (this.ctx === null)
+            return false;
+        this.ctx.drawImage(videoElem, 0, 0, this.canvas.width, this.canvas.height);
+        return true;
+    }
+    clear() {
+        if (this.canvas === null)
+            return false;
+        if (this.ctx === null)
+            return false;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        return true;
+    }
 }
 export class HtmlMakerOptionImg {
     imgSrc = ""; //遅延ロード有効の場合""セット
@@ -577,9 +593,27 @@ export class HtmlMakerTableRow {
                 }
                 resHTML = `${resHTML}<td${className}${id}${colspan}>${dispTag}</td>`;
             }
+            /*
             if (col.items.length === 1 && col.items[0].typeInfo.using.itemType === HtmlMakerOptionItemUsingTypes.LowerTable) {
                 //TABLEタグ用のTDを用意
-                resHTML = `${resHTML}<td></td>`;
+                resHTML = `${resHTML}<td></td>`
+            }
+            */
+            if (col.items.length === 1) {
+                const item = col.items[0];
+                switch (item.typeInfo.using.itemType) {
+                    case HtmlMakerOptionItemUsingTypes.LowerTable:
+                        //TABLEタグ用のTDを用意
+                        resHTML = `${resHTML}<td></td>`;
+                        break;
+                    case HtmlMakerOptionItemUsingTypes.Plain:
+                        //Plain用のTDを用意
+                        const name = item.tdName !== `` ? item.tdName : item.className;
+                        const className = ` class=${name}`;
+                        const id = ` id=${name}`;
+                        resHTML = `${resHTML}<td${className}${id}>${item.typeInfo.using.innerHTML}</td>`;
+                        break;
+                }
             }
         }
         return resHTML;
@@ -6684,6 +6718,25 @@ export class HtmlMakerToolTip {
                 className = className.substring(0, pos - 1);
             }
             resMap.set(className, elem);
+        }
+        return resMap;
+    }
+    RowTds(rowIndex) {
+        const rows = this.TableRows();
+        if (rows === null)
+            return null;
+        const row = rows[rowIndex];
+        const resMap = new Map;
+        const activeKeyText = HtmlMakerCommonCss.radioActiveKeyText;
+        for (const td of row.cells) {
+            let className = td.className;
+            if (className.length === 0)
+                continue;
+            const pos = className.indexOf(activeKeyText);
+            if (pos !== -1) {
+                className = className.substring(0, pos - 1);
+            }
+            resMap.set(className, td);
         }
         return resMap;
     }
