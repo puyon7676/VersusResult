@@ -74,10 +74,10 @@ function superMain() {
         window.location.hostname === "127.0.0.1" ||
         window.location.hostname.startsWith("192.168."); // iPadからPCを見る時用
     // 2. 読み込むファイルの「住所」を振り分ける
-    const jszipSrc = isLocal ?
+    const jszipSrc = isLocal || isElectron ?
         "./jszip_dist/jszip.min.js" :
         "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
-    const jsstoreSrc = isLocal ?
+    const jsstoreSrc = isLocal || isElectron ?
         "./jsstore_dist/jsstore.min.js" :
         "https://cdn.jsdelivr.net/npm/jsstore/dist/jsstore.min.js";
     // 後で main.js から見れるように、window（グローバル）に覚えさせる

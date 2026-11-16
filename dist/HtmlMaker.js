@@ -1580,11 +1580,18 @@ export const HtmlMakerUpDownMatchTypes = {
     ByValue: "ByValue",
     Both: "Both",
 };
+export const HtmlMakerUpDownDirTypes = {
+    Vert: "Vert",
+    Horz: "Horz",
+};
 export class HtmlMakerUpDown extends HtmlMakerCtlBase {
     initValue = ``;
     keyValuePairs;
     selectedIndex = -1;
     delimiter = `/`;
+    dir = HtmlMakerUpDownDirTypes.Vert;
+    valueWidth = 32;
+    valueFontSize = 20;
     callerName = ``;
     htmlMaker = new HtmlMaker();
     table = new HtmlMakerTable();
@@ -1595,24 +1602,45 @@ export class HtmlMakerUpDown extends HtmlMakerCtlBase {
         this.dispose();
         this.callerName = callerName;
         this.ctlName = ctlName;
-        // 1列 × 3行 の次元を作成
         const table = new HtmlMakerTable();
-        table.makeDim(1, 3);
-        let rowIndex = 0;
-        // ▲ボタン
-        table.getCell(0, rowIndex).typeInfo.setButton(`⏫`);
-        table.getCell(0, rowIndex).className = this.upCssName();
-        table.getCell(0, rowIndex).typeInfo.using.itemId = rowIndex;
-        // values
-        rowIndex++;
-        table.getCell(0, rowIndex).typeInfo.setButton(``);
-        table.getCell(0, rowIndex).className = this.valCssName();
-        table.getCell(0, rowIndex).typeInfo.using.itemId = rowIndex;
-        // ▼ボタン
-        rowIndex++;
-        table.getCell(0, rowIndex).typeInfo.setButton(`⏬`);
-        table.getCell(0, rowIndex).className = this.dwCssName();
-        table.getCell(0, rowIndex).typeInfo.using.itemId = rowIndex;
+        if (this.dir === HtmlMakerUpDownDirTypes.Vert) {
+            // 1列 × 3行 の次元を作成
+            table.makeDim(1, 3);
+            let rowIndex = 0;
+            // ▲ボタン
+            table.getCell(0, rowIndex).typeInfo.setButton(`⏫`);
+            table.getCell(0, rowIndex).className = this.upCssName();
+            table.getCell(0, rowIndex).typeInfo.using.itemId = rowIndex;
+            // values
+            rowIndex++;
+            table.getCell(0, rowIndex).typeInfo.setButton(``);
+            table.getCell(0, rowIndex).className = this.valCssName();
+            table.getCell(0, rowIndex).typeInfo.using.itemId = rowIndex;
+            // ▼ボタン
+            rowIndex++;
+            table.getCell(0, rowIndex).typeInfo.setButton(`⏬`);
+            table.getCell(0, rowIndex).className = this.dwCssName();
+            table.getCell(0, rowIndex).typeInfo.using.itemId = rowIndex;
+        }
+        else {
+            // 3列 × 1行 の次元を作成
+            table.makeDim(3, 1);
+            let colIndex = 0;
+            // ▲ボタン
+            table.getCell(colIndex, 0).typeInfo.setButton(`⏪`);
+            table.getCell(colIndex, 0).className = this.upCssName();
+            table.getCell(colIndex, 0).typeInfo.using.itemId = colIndex;
+            // values
+            colIndex++;
+            table.getCell(colIndex, 0).typeInfo.setButton(``);
+            table.getCell(colIndex, 0).className = this.valCssName();
+            table.getCell(colIndex, 0).typeInfo.using.itemId = colIndex;
+            // ▼ボタン
+            colIndex++;
+            table.getCell(colIndex, 0).typeInfo.setButton(`⏩`);
+            table.getCell(colIndex, 0).className = this.dwCssName();
+            table.getCell(colIndex, 0).typeInfo.using.itemId = colIndex;
+        }
         const parentElem = this.firstAction(ctlName, parentName);
         if (parentElem === null) {
             //console.log(`[setListener] cannot found ${parentName}`)
@@ -1640,9 +1668,17 @@ export class HtmlMakerUpDown extends HtmlMakerCtlBase {
                         const evCtl = new HtmlMakerCtlEvent();
                         evCtl.callerName = this.callerName;
                         evCtl.result = this.keyValuePairs[this.selectedIndex];
-                        await this.onUp(evCtl);
-                        if (!evArgs.cancel) {
-                            this.onUpAction();
+                        if (this.dir === HtmlMakerUpDownDirTypes.Vert) {
+                            await this.onUp(evCtl);
+                            if (!evArgs.cancel) {
+                                this.onUpAction();
+                            }
+                        }
+                        else {
+                            await this.onDown(evCtl);
+                            if (!evArgs.cancel) {
+                                this.onDnAction();
+                            }
                         }
                     }
                     break;
@@ -1651,9 +1687,17 @@ export class HtmlMakerUpDown extends HtmlMakerCtlBase {
                         const evCtl = new HtmlMakerCtlEvent();
                         evCtl.callerName = this.callerName;
                         evCtl.result = this.keyValuePairs[this.selectedIndex];
-                        await this.onDown(evCtl);
-                        if (!evArgs.cancel) {
-                            this.onDnAction();
+                        if (this.dir === HtmlMakerUpDownDirTypes.Vert) {
+                            await this.onDown(evCtl);
+                            if (!evArgs.cancel) {
+                                this.onDnAction();
+                            }
+                        }
+                        else {
+                            await this.onUp(evCtl);
+                            if (!evArgs.cancel) {
+                                this.onUpAction();
+                            }
                         }
                     }
                     break;
@@ -1752,10 +1796,22 @@ ${this.getOuterCssText()}
 .${this.tblCssName()} tr {
   ${HtmlMakerCommonCss.spacingTr}
 }
-.${this.tblCssName()} button {
+.${this.upCssName()} {
 ${HtmlMakerCommonCss.stdButtonText()}
 width: 32px; height: 32px;
 font-size: 20px;
+padding: unset;
+}
+.${this.dwCssName()} {
+${HtmlMakerCommonCss.stdButtonText()}
+width: 32px; height: 32px;
+font-size: 20px;
+padding: unset;
+}
+.${this.valCssName()} {
+${HtmlMakerCommonCss.stdButtonText()}
+width: ${this.valueWidth}px; height: 32px;
+font-size: ${this.valueFontSize}px;
 padding: unset;
 }
 .${this.tblCssName()} button:hover {

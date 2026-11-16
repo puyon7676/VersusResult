@@ -9,6 +9,7 @@ import { HtmlMakerCanvasTool } from "./HtmlMaker.js";
 import { EvonaMessageBox, MessageBoxResultTypes } from "./MessageBox.js";
 import { DragDropHelper } from "./HtmlMaker.js";
 import { FileSelect } from "./HtmlMaker.js";
+import { HtmlMakerUpDown, HtmlMakerUpDownDirTypes } from "./HtmlMaker.js";
 import { ClipboardHelper } from "./ClipboardHelper.js";
 import { ElectronTools } from "./ServerTools.js";
 import { ytInfos, ytInfo, isYtUrlPrefix, isYtUrlShortPrefix, convYtUrlPrefix, convYtUrlShortPrefix } from "./YoutubeInfos.js";
@@ -45,6 +46,9 @@ export class VideoPlay {
         if (this.isSeekEnd) {
             this.isSeekEnd = false;
             return;
+        }
+        if (this.isNeedPauseToSeek === true) {
+            this.endPauseToSeek();
         }
         let isDl = this.isPinP;
         if (!this.isPinP) {
@@ -157,6 +161,9 @@ export class VideoPlay {
     repeatMap = new Map;
     videoCssName = ``;
     videoElem;
+    isNeedPauseToSeek = false; //一時停止要求を出して一時停止した後にシーク実行するか
+    pauseToSeekTo = 0; //一時停止要求を出して一時停止した後にシークする位置
+    pauseToSeekOfs = 0; //一時停止要求を出して一時停止した後にシークする位置±オフセット(×1000)
     setupVideoElem() {
         this.videoCssName = this.videoDropVideoCssClassName();
         const videoElem = document.createElement(`video`);
@@ -181,6 +188,51 @@ export class VideoPlay {
         videoElem.addEventListener(`error`, this.onVideoError);
         document.body.appendChild(videoElem);
         this.videoElem = videoElem;
+    }
+    startPauseToSeek(seekTo, seekOfs) {
+        if (this.videoElem.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+            console.log(`**startPauseToSeek**`, `cannot play`);
+            return;
+        }
+        if (this.isNeedPauseToSeek === true) {
+            console.log(`**startPauseToSeek**`, `already started`);
+            return;
+        }
+        const pauseTime = this.videoElem.currentTime;
+        const duration = this.videoElem.duration;
+        let wantTime = (seekTo * 1000 + seekOfs) / 1000;
+        if (seekTo < 0) {
+            console.log(`**startPauseToSeek**`, `invalid seekTo params`);
+            return;
+        }
+        if (wantTime < 0) {
+            console.log(`**startPauseToSeek**`, `adjust wantTime start-time`);
+            wantTime = 0;
+        }
+        if (wantTime > duration) {
+            console.log(`**startPauseToSeek**`, `adjust wantTime end-time`);
+            wantTime = duration;
+        }
+        if (!this.videoElem.paused) {
+            this.isNeedPauseToSeek = true;
+            this.pauseToSeekTo = seekTo;
+            this.pauseToSeekOfs = seekOfs;
+            this.videoElem.pause();
+            console.log(`**startPauseToSeek**`, `pause start!! -> ${wantTime}`);
+        }
+        else {
+            this.videoElem.currentTime = wantTime;
+        }
+    }
+    endPauseToSeek() {
+        if (this.isNeedPauseToSeek === true) {
+            const wantTime = (this.pauseToSeekTo * 1000 + this.pauseToSeekOfs) / 1000;
+            this.videoElem.currentTime = wantTime;
+            console.log(`**endPauseToSeek**`, `pause to seeked!! -> ${wantTime}`);
+        }
+        this.isNeedPauseToSeek = false;
+        this.pauseToSeekTo = 0;
+        this.pauseToSeekOfs = 0;
     }
     env;
     dockUI;
@@ -654,8 +706,25 @@ ${HtmlMakerCommonCss.btnHoverCssText}
     endCanvasTool = null;
     startTime = -1;
     endTime = -1;
+    startUpDn = null;
+    endUpDn = null;
+    onVideoEditOnFirstVisible = async () => {
+        if (this.videoEditToolTip === null)
+            return;
+        const dlg = this.videoEditToolTip.dlg;
+        const htmlMaker = new HtmlMaker();
+        const rcDlg = htmlMaker.GetRect(dlg);
+        const rcSCanvas = htmlMaker.GetRect(this.startCanvasTool.canvas);
+        this.startUpDn.show(`${parseInt(rcSCanvas.left) - parseInt(rcDlg.left) - 4}`, 
+        //`${parseInt(rcCanvas.top) - parseInt(rcDlg.top) + parseInt(rcCanvas.height)}`
+        rcDlg.height);
+        const rcECanvas = htmlMaker.GetRect(this.endCanvasTool.canvas);
+        this.endUpDn.show(`${parseInt(rcECanvas.left) - parseInt(rcDlg.left) - 4}`, 
+        //`${parseInt(rcCanvas.top) - parseInt(rcDlg.top) + parseInt(rcCanvas.height)}`
+        rcDlg.height);
+    };
     onVideoEditButtonClick = async (rowindex, btn, div, tbl, row, col) => {
-        console.log(`onVideoEditButtonClick`, rowindex, btn, div, tbl, row, col);
+        //console.log(`onVideoEditButtonClick`, rowindex, btn, div, tbl, row, col)
         if (rowindex <= -1)
             return;
         switch (btn.className) {
@@ -802,8 +871,11 @@ ${HtmlMakerCommonCss.btnHoverCssText}
             toolTipNew.Show(document.body); //videoElem.className
             toolTipNew.SetVisible(false);
             toolTipNew.EnableEvents();
+            toolTipNew.EnableFirstVisible(this.onVideoEditOnFirstVisible);
             toolTipNew.onButtonClicked = this.onVideoEditButtonClick;
             this.makeVideoEditCanvas(toolTipNew);
+            this.startUpDn = this.makeSeekCtl(toolTipNew, `startUpDn`, this.startCanvasTool);
+            this.endUpDn = this.makeSeekCtl(toolTipNew, `endUpDn`, this.endCanvasTool);
         }
         return toolTipNew;
     }
@@ -878,6 +950,58 @@ ${HtmlMakerCommonCss.btnHoverCssText}
             if (this.endCanvasTool !== null)
                 this.endCanvasTool.clear();
         }
+    }
+    //
+    seekMap = new Map([
+        [`10.0s`, `10000`],
+        [`1.0s`, `1000`],
+        [`0.5s`, `500`],
+        [`0.3s`, `300`],
+        [`0.1s`, `100`],
+        [`-0.1s`, `-100`],
+        [`-0.3s`, `-300`],
+        [`-0.5s`, `-500`],
+        [`-1.0s`, `-1000`],
+        [`-10.0s`, `-10000`],
+    ]);
+    makeSeekCtl(toolTipNew, ctlName, caller) {
+        let callerText = `-0.1s`;
+        const pair = new Array;
+        for (const [key, seek] of this.seekMap) {
+            pair.push(`${key}/${seek}`);
+        }
+        const callerName = caller.canvas.parentElement.className; //`td_`
+        const parentClassName = callerName;
+        const updn = new HtmlMakerUpDown();
+        updn.dir = HtmlMakerUpDownDirTypes.Horz;
+        updn.valueWidth = 56;
+        updn.valueFontSize = 18;
+        updn.setListener(ctlName, parentClassName, callerName);
+        updn.setSelectedByValue(callerText, pair);
+        updn.applyCss();
+        updn.show(`0`, `0`);
+        updn.enableEvents(
+        /*onApply*/ async (ev) => {
+            console.log(`[onApply] ${ev.callerName} ${ev.result}`);
+            const isStartCanvas = ev.callerName.includes(this.startCanvasTool.canvas.className);
+            const updnCtl = isStartCanvas ? this.startUpDn : this.endUpDn;
+            const pair = updnCtl.getValue(updnCtl.selectedIndex);
+            console.log(pair);
+            let seekTo = isStartCanvas ? this.startTime : this.endTime;
+            if (seekTo < 0)
+                seekTo = 0;
+            const seekOfs = Number(pair[1]);
+            this.startPauseToSeek(seekTo, seekOfs);
+        }, 
+        /*onUp*/ async (ev) => {
+            //console.log(`[onUp] ${ev.callerName} ${ev.result}`)
+        }, 
+        /*onDown*/ async (ev) => {
+            //console.log(`[onDown] ${ev.callerName} ${ev.result}`)
+        });
+        //this.enableWindowEvent()
+        updn.enableOverlay(false);
+        return updn;
     }
     //ここからローカル動画再生UI
     onVideoOnFirstVisible = async () => {
