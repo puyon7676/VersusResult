@@ -9,7 +9,7 @@ import { HtmlMakerCanvasTool } from "./HtmlMaker.js";
 import { EvonaMessageBox, MessageBoxResultTypes } from "./MessageBox.js";
 import { DragDropHelper } from "./HtmlMaker.js";
 import { FileSelect } from "./HtmlMaker.js";
-import { HtmlMakerUpDown, HtmlMakerUpDownDirTypes } from "./HtmlMaker.js";
+import { HtmlMakerUpDown, HtmlMakerUpDownDirTypes, HtmlMakerTimeSelect } from "./HtmlMaker.js";
 import { ClipboardHelper } from "./ClipboardHelper.js";
 import { ElectronTools } from "./ServerTools.js";
 import { ytInfos, ytInfo, isYtUrlPrefix, isYtUrlShortPrefix, convYtUrlPrefix, convYtUrlShortPrefix } from "./YoutubeInfos.js";
@@ -315,6 +315,88 @@ export class VideoPlay {
     playEditToolTip = null; //プレイリスト編集
     playListCtl = null; //プレイリスト表示
     currentPlayMark = `🎦`;
+    getPausedCurrentTime() {
+        if (this.dockUI.selectedPlayer === this.videoElem) {
+            if (this.videoElem.src.length === 0)
+                return -1;
+            if (this.videoElem.paused)
+                return this.videoElem.currentTime;
+        }
+        else {
+            const state = this.ytPlayer.getPlayerState();
+            switch (state) {
+                case 1: //再生中
+                    return -1;
+                case 2: //一時停止
+                    const pauseTime = this.ytPlayer.getCurrentTime();
+                    return pauseTime;
+            }
+        }
+        return -1;
+    }
+    getDuration() {
+        if (this.dockUI.selectedPlayer === this.videoElem) {
+            return this.videoElem.duration;
+        }
+        else {
+            const duration = this.ytPlayer.getDuration();
+            return duration;
+        }
+        return -1;
+    }
+    isInDuration(timeText, aDuration) {
+        const timeArray = timeText.split(`:`);
+        const seconds = Number(timeArray[0]) * 3600 + Number(timeArray[1]) * 60 + Number(timeArray[2]);
+        if (seconds < aDuration)
+            return seconds;
+        return -1;
+    }
+    setCurrentTime(seconds) {
+        if (this.dockUI.selectedPlayer === this.videoElem) {
+            this.videoElem.currentTime = seconds;
+        }
+        else {
+            this.ytPlayer.seekTo(seconds, true); //操作していない前提
+        }
+    }
+    //ここから再生時間選択
+    timeSelectCtl = null; //再生時間選択
+    makeTimeSelectCtl() {
+        const dlg = this.videoToolTip.dlg;
+        const tsCtl = new HtmlMakerTimeSelect();
+        tsCtl.setInit(0);
+        const parentName = dlg.id;
+        tsCtl.setListener(`${parentName}-timeSelect`, parentName, `${parentName}-timeSelect`);
+        tsCtl.enableOverlay(false);
+        tsCtl.applyCss();
+        tsCtl.show(`0`, `0`);
+        tsCtl.enableEvents(
+        /*onUpAction*/
+        async (ev) => {
+            //console.log(`[onUpAction] ${ev.callerName} ${ev.result}`)
+            if (this.getPausedCurrentTime() === -1)
+                ev.cancel = true;
+            const seconds = this.isInDuration(ev.result, this.getDuration());
+            if (seconds === -1)
+                ev.cancel = true;
+            if (!ev.cancel)
+                this.setCurrentTime(seconds);
+        }, 
+        /*onDnAction*/
+        async (ev) => {
+            //console.log(`[onDnAction] ${ev.callerName} ${ev.result}`)
+            if (this.getPausedCurrentTime() === -1)
+                ev.cancel = true;
+            const seconds = this.isInDuration(ev.result, this.getDuration());
+            if (seconds === -1)
+                ev.cancel = true;
+            if (!ev.cancel)
+                this.setCurrentTime(seconds);
+        });
+        this.timeSelectCtl = tsCtl;
+        this.timeSelectCtl.setVisible(false);
+    }
+    //ここからプレイリスト表示
     setPlayListItems;
     setVideoPlayListItems(choiceItems) {
         let playIndex = 0;
@@ -379,16 +461,25 @@ export class VideoPlay {
                     if (splited.length >= 2) {
                         const playIndex = Number(splited[splited.length - 1]);
                         if (this.dockUI.selectedPlayer === this.videoElem) {
-                            const existFile = this.revokeSrc();
-                            const videoInfo = playIndex !== 0 ? this.playList[playIndex - 1] : existFile;
-                            this.setSrc(videoInfo);
-                            await this.videoElem.play();
-                            console.log(`**update before**`, this.playList);
-                            this.playList[playIndex - 1] = existFile;
-                            console.log(`**update after** `, this.playList);
-                            this.resetVideoEdit();
-                            if (this.videoEditToolTip !== null)
-                                this.videoEditToolTip.SetVisible(true);
+                            if (playIndex !== 0) {
+                                const existFile = this.revokeSrc();
+                                const videoInfo = playIndex !== 0 ? this.playList[playIndex - 1] : existFile;
+                                this.setSrc(videoInfo);
+                                await this.videoElem.play();
+                                console.log(`**update before**`, this.playList);
+                                this.playList[playIndex - 1] = existFile;
+                                console.log(`**update after** `, this.playList);
+                                if (this.videoEditToolTip !== null) {
+                                    this.resetVideoEdit();
+                                    this.videoEditToolTip.SetVisible(true);
+                                }
+                            }
+                            else {
+                                if (this.videoEditToolTip !== null && !this.videoEditToolTip.GetVisible()) {
+                                    this.resetVideoEdit();
+                                    this.videoEditToolTip.SetVisible(true);
+                                }
+                            }
                         }
                         else {
                             this.ytDestory();
@@ -1026,6 +1117,14 @@ ${HtmlMakerCommonCss.btnHoverCssText}
             if (this.playEditToolTip !== null)
                 this.playEditToolTip.SetVisible(false);
         }
+        if (this.timeSelectCtl !== null) {
+            const dlg = this.videoToolTip.dlg;
+            const rcDlg = this.timeSelectCtl.htmlMaker.GetRect(dlg);
+            const rcCtl = this.timeSelectCtl.getRect();
+            const left = (parseInt(rcDlg.width) - rcCtl.width) / 2;
+            const top = parseInt(rcDlg.height);
+            this.timeSelectCtl.moveTo(left, top);
+        }
     };
     onVideoOnChangeVisible = async (toTrue) => {
         if (this.dockUI.selectedPlayer === this.videoElem) {
@@ -1111,6 +1210,11 @@ ${HtmlMakerCommonCss.btnHoverCssText}
         else
             await this.ytPlayNext();
     };
+    onClickSeekBtn = async (event) => {
+        if (this.timeSelectCtl === null)
+            return;
+        this.timeSelectCtl.setVisible(!this.timeSelectCtl.getVisible());
+    };
     onClickListBtn = async (event) => {
         this.makePlayListCtl();
     };
@@ -1130,6 +1234,7 @@ ${HtmlMakerCommonCss.btnHoverCssText}
     videoOpenButton = null;
     videoBackButton = null;
     videoNextButton = null;
+    videoSeekButton = null;
     videoListButton = null;
     videoEditButton = null;
     makeVideoCtlBtns() {
@@ -1142,6 +1247,7 @@ ${HtmlMakerCommonCss.btnHoverCssText}
         const openBtnName = `${actDiv.className}-open`;
         const backBtnName = `${actDiv.className}-back`;
         const nextBtnName = `${actDiv.className}-next`;
+        const seekBtnName = `${actDiv.className}-seek`;
         const listBtnName = `${actDiv.className}-list`;
         const editBtnName = `${actDiv.className}-edit`;
         const openButton = document.createElement("button");
@@ -1165,6 +1271,13 @@ ${HtmlMakerCommonCss.btnHoverCssText}
         nextButton.title = `Next`;
         actDivParent.appendChild(nextButton);
         nextButton.addEventListener("click", this.onClickNextBtn);
+        const seekButton = document.createElement("button");
+        seekButton.id = seekBtnName;
+        seekButton.className = seekBtnName;
+        seekButton.innerHTML = `🔄`;
+        seekButton.title = `Seek`;
+        actDivParent.appendChild(seekButton);
+        seekButton.addEventListener("click", this.onClickSeekBtn);
         const listButton = document.createElement("button");
         listButton.id = listBtnName;
         listButton.className = listBtnName;
@@ -1182,6 +1295,7 @@ ${HtmlMakerCommonCss.btnHoverCssText}
         this.videoOpenButton = openButton;
         this.videoBackButton = backButton;
         this.videoNextButton = nextButton;
+        this.videoSeekButton = seekButton;
         this.videoListButton = listButton;
         this.videoEditButton = editButton;
     }
@@ -1189,6 +1303,7 @@ ${HtmlMakerCommonCss.btnHoverCssText}
         const btnOpenName = `${this.videoOpenButton.className}`;
         const btnBackName = `${this.videoBackButton.className}`;
         const btnNextName = `${this.videoNextButton.className}`;
+        const btnSeekName = `${this.videoSeekButton.className}`;
         const btnListName = `${this.videoListButton.className}`;
         const btnEditName = `${this.videoEditButton.className}`;
         const btnCss = this.commonBtnCssText();
@@ -1209,6 +1324,12 @@ ${HtmlMakerCommonCss.btnHoverCssText}
 ${btnCss}
 }
 #${btnNextName}:hover {
+${HtmlMakerCommonCss.btnHoverCssText}
+}
+#${btnSeekName} {
+${btnCss}
+}
+#${btnSeekName}:hover {
 ${HtmlMakerCommonCss.btnHoverCssText}
 }
 #${btnListName} {
@@ -1248,6 +1369,7 @@ ${HtmlMakerCommonCss.btnHoverCssText}
             toolTipNew.EnableEvents();
             toolTipNew.EnableFirstVisible(this.onVideoOnFirstVisible);
             toolTipNew.onChangeVisible = this.onVideoOnChangeVisible;
+            this.makeTimeSelectCtl();
             this.playEditToolTip = await this.makePlayEditCtlToolTip();
             this.videoEditToolTip = await this.makeVideoEditCtlToolTip();
         }

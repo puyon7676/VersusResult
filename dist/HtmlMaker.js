@@ -7,7 +7,6 @@ export class HtmlMakerEvent {
     eventType = HtmlMakerEventTypes.Unknown;
     parentElem = null;
     item;
-    cancel = false;
     targetId = ""; //combo:識別
     classify = ""; //combo:クラス
     selectedValue = ""; //combo:選択結果
@@ -24,6 +23,7 @@ export class HtmlMakerCtlEvent {
     result = ``;
     classify = HtmlMakerCtlEventTypes.Unknown; //イベント識別
     notify;
+    cancel = false;
 }
 export class HtmlMakerRect {
     parentElem = null;
@@ -1670,13 +1670,13 @@ export class HtmlMakerUpDown extends HtmlMakerCtlBase {
                         evCtl.result = this.keyValuePairs[this.selectedIndex];
                         if (this.dir === HtmlMakerUpDownDirTypes.Vert) {
                             await this.onUp(evCtl);
-                            if (!evArgs.cancel) {
+                            if (!evCtl.cancel) {
                                 this.onUpAction();
                             }
                         }
                         else {
                             await this.onDown(evCtl);
-                            if (!evArgs.cancel) {
+                            if (!evCtl.cancel) {
                                 this.onDnAction();
                             }
                         }
@@ -1689,13 +1689,13 @@ export class HtmlMakerUpDown extends HtmlMakerCtlBase {
                         evCtl.result = this.keyValuePairs[this.selectedIndex];
                         if (this.dir === HtmlMakerUpDownDirTypes.Vert) {
                             await this.onDown(evCtl);
-                            if (!evArgs.cancel) {
+                            if (!evCtl.cancel) {
                                 this.onDnAction();
                             }
                         }
                         else {
                             await this.onUp(evCtl);
-                            if (!evArgs.cancel) {
+                            if (!evCtl.cancel) {
                                 this.onUpAction();
                             }
                         }
@@ -1892,6 +1892,341 @@ border: 1px solid #b4b107;
     upCssName() { return `${this.ctlName}-upBtn`; }
     dwCssName() { return `${this.ctlName}-dwBtn`; }
     valCssName() { return `${this.ctlName}-values`; }
+}
+export class HtmlMakerTimeSelect extends HtmlMakerCtlBase {
+    initHH = 0;
+    initMM = 0;
+    initSS = 0;
+    valueWidth = 24;
+    valueFontSize = 16;
+    callerName = ``;
+    htmlMaker = new HtmlMaker();
+    table = new HtmlMakerTable();
+    hhElem;
+    mmElem;
+    ssElem;
+    onUp;
+    onDown;
+    setListener(ctlName, parentName, callerName) {
+        this.dispose();
+        this.callerName = callerName;
+        this.ctlName = ctlName;
+        const hh = String(this.initHH).padStart(2, '0');
+        const mm = String(this.initMM).padStart(2, '0');
+        const ss = String(this.initSS).padStart(2, '0');
+        //const sss = String(this.initSSS).padStart(3, '0');
+        const table = new HtmlMakerTable();
+        // 3列 × 3行 の次元を作成
+        table.makeDim(3, 3);
+        let rowIndex = 0;
+        // ▲ボタン
+        table.getCell(0, rowIndex).typeInfo.setButton(`⏫`);
+        table.getCell(0, rowIndex).className = this.hhUpCssName();
+        table.getCell(0, rowIndex).typeInfo.using.itemId = rowIndex;
+        // values
+        rowIndex++;
+        table.getCell(0, rowIndex).typeInfo.setButton(hh);
+        table.getCell(0, rowIndex).className = this.hhValCssName();
+        table.getCell(0, rowIndex).typeInfo.using.itemId = rowIndex;
+        // ▼ボタン
+        rowIndex++;
+        table.getCell(0, rowIndex).typeInfo.setButton(`⏬`);
+        table.getCell(0, rowIndex).className = this.hhDwCssName();
+        table.getCell(0, rowIndex).typeInfo.using.itemId = rowIndex;
+        rowIndex = 0;
+        // ▲ボタン
+        table.getCell(1, rowIndex).typeInfo.setButton(`⏫`);
+        table.getCell(1, rowIndex).className = this.mmUpCssName();
+        table.getCell(1, rowIndex).typeInfo.using.itemId = rowIndex;
+        // values
+        rowIndex++;
+        table.getCell(1, rowIndex).typeInfo.setButton(mm);
+        table.getCell(1, rowIndex).className = this.mmValCssName();
+        table.getCell(1, rowIndex).typeInfo.using.itemId = rowIndex;
+        // ▼ボタン
+        rowIndex++;
+        table.getCell(1, rowIndex).typeInfo.setButton(`⏬`);
+        table.getCell(1, rowIndex).className = this.mmDwCssName();
+        table.getCell(1, rowIndex).typeInfo.using.itemId = rowIndex;
+        rowIndex = 0;
+        // ▲ボタン
+        table.getCell(2, rowIndex).typeInfo.setButton(`⏫`);
+        table.getCell(2, rowIndex).className = this.ssUpCssName();
+        table.getCell(2, rowIndex).typeInfo.using.itemId = rowIndex;
+        // values
+        rowIndex++;
+        table.getCell(2, rowIndex).typeInfo.setButton(ss);
+        table.getCell(2, rowIndex).className = this.ssValCssName();
+        table.getCell(2, rowIndex).typeInfo.using.itemId = rowIndex;
+        // ▼ボタン
+        rowIndex++;
+        table.getCell(2, rowIndex).typeInfo.setButton(`⏬`);
+        table.getCell(2, rowIndex).className = this.ssDwCssName();
+        table.getCell(2, rowIndex).typeInfo.using.itemId = rowIndex;
+        const parentElem = this.firstAction(ctlName, parentName);
+        if (parentElem === null) {
+            //console.log(`[setListener] cannot found ${parentName}`)
+            return false;
+        }
+        const ctlHTML = table.ToScrollHTML(ctlName, ctlName);
+        const item = new HtmlMakerItem;
+        item.props.name = ``;
+        item.props.id = this.tblCssName();
+        item.props.className = this.tblCssName();
+        item.props.option.setTable(ctlHTML);
+        item.props.option.onSelect = async (evArgs) => {
+            //console.log(`classify = ${evArgs.classify} targetId = ${evArgs.targetId}`)
+            switch (evArgs.classify) {
+                case this.hhUpCssName():
+                    if (this.onUp !== undefined) {
+                        const updated = this.update(1, 0, 0);
+                        const evCtl = new HtmlMakerCtlEvent();
+                        evCtl.callerName = this.callerName;
+                        evCtl.result = updated[3];
+                        await this.onUp(evCtl);
+                        if (!evCtl.cancel) {
+                            this.hhElem.textContent = updated[0];
+                            this.onUpAction();
+                        }
+                    }
+                    break;
+                case this.hhDwCssName():
+                    if (this.onDown !== undefined) {
+                        const updated = this.update(-1, 0, 0);
+                        const evCtl = new HtmlMakerCtlEvent();
+                        evCtl.callerName = this.callerName;
+                        evCtl.result = updated[3];
+                        await this.onDown(evCtl);
+                        if (!evCtl.cancel) {
+                            this.hhElem.textContent = updated[0];
+                            this.onDnAction();
+                        }
+                    }
+                    break;
+                case this.mmUpCssName():
+                    if (this.onUp !== undefined) {
+                        const updated = this.update(0, 1, 0);
+                        const evCtl = new HtmlMakerCtlEvent();
+                        evCtl.callerName = this.callerName;
+                        evCtl.result = updated[3];
+                        await this.onUp(evCtl);
+                        if (!evCtl.cancel) {
+                            this.mmElem.textContent = updated[1];
+                            this.onUpAction();
+                        }
+                    }
+                    break;
+                case this.mmDwCssName():
+                    if (this.onDown !== undefined) {
+                        const updated = this.update(0, -1, 0);
+                        const evCtl = new HtmlMakerCtlEvent();
+                        evCtl.callerName = this.callerName;
+                        evCtl.result = updated[3];
+                        await this.onDown(evCtl);
+                        if (!evCtl.cancel) {
+                            this.mmElem.textContent = updated[1];
+                            this.onDnAction();
+                        }
+                    }
+                    break;
+                case this.ssUpCssName():
+                    if (this.onUp !== undefined) {
+                        const updated = this.update(0, 0, 1);
+                        const evCtl = new HtmlMakerCtlEvent();
+                        evCtl.callerName = this.callerName;
+                        evCtl.result = updated[3];
+                        await this.onUp(evCtl);
+                        if (!evCtl.cancel) {
+                            this.ssElem.textContent = updated[2];
+                            this.onUpAction();
+                        }
+                    }
+                    break;
+                case this.ssDwCssName():
+                    if (this.onDown !== undefined) {
+                        const updated = this.update(0, 0, -1);
+                        const evCtl = new HtmlMakerCtlEvent();
+                        evCtl.callerName = this.callerName;
+                        evCtl.result = updated[3];
+                        await this.onDown(evCtl);
+                        if (!evCtl.cancel) {
+                            this.ssElem.textContent = updated[2];
+                            this.onDnAction();
+                        }
+                    }
+                    break;
+            }
+        };
+        this.htmlMaker = new HtmlMaker();
+        this.htmlMaker.add(item);
+        const tableHtml = this.htmlMaker.ToHTML();
+        let ctlElem = document.createElement("dialog");
+        ctlElem.className = ctlName;
+        ctlElem.innerHTML = tableHtml;
+        this.ctlElem = ctlElem;
+        let div = ctlElem.children[0];
+        let tbl = div.children[0];
+        tbl.className = `${this.tblCssName()}`;
+        tbl.id = `${this.tblCssName()}`;
+        this.ctlElem.appendChild(tbl);
+        div.remove();
+        div = null;
+        parentElem.appendChild(this.ctlElem);
+        /*
+        ctlElem.remove()
+        ctlElem = null
+        */
+        this.table = table;
+        let valElem = this.ctlElem.querySelectorAll(`.${this.hhValCssName()}`);
+        if (valElem !== null) {
+            this.hhElem = valElem[0];
+        }
+        valElem = this.ctlElem.querySelectorAll(`.${this.mmValCssName()}`);
+        if (valElem !== null) {
+            this.mmElem = valElem[0];
+        }
+        valElem = this.ctlElem.querySelectorAll(`.${this.ssValCssName()}`);
+        if (valElem !== null) {
+            this.ssElem = valElem[0];
+        }
+        return true;
+    }
+    show(left, top) {
+        if (this.ctlElem === null)
+            return;
+        this.ctlElem.style.left = `${left}px`;
+        this.ctlElem.style.top = `${top}px`;
+        this.ctlElem.show();
+    }
+    applyCss() {
+        const styleId = `${this.getBaseElem().className}-timeselect-style`;
+        if (document.getElementById(styleId))
+            return;
+        const btnCss = `
+${HtmlMakerCommonCss.stdButtonText()}
+width: 24px; height: 24px;
+font-size: 16px;
+padding: unset;
+`.trim();
+        const valCss = `
+${HtmlMakerCommonCss.stdButtonText()}
+width: ${this.valueWidth}px; height: 24px;
+font-size: ${this.valueFontSize}px;
+padding: unset;
+`.trim();
+        const style = this.appendStyle(styleId);
+        style.textContent = `
+${this.getOuterCssText()}
+.${this.tblCssName()} {
+  ${this.getBaseCssText()}
+  ${HtmlMakerCommonCss.spacingTable}
+}
+.${this.tblCssName()} tr {
+  ${HtmlMakerCommonCss.spacingTr}
+}
+
+.${this.hhUpCssName()} {
+${btnCss}
+}
+.${this.hhDwCssName()} {
+${btnCss}
+}
+.${this.hhValCssName()} {
+${valCss}
+}
+
+.${this.mmUpCssName()} {
+${btnCss}
+}
+.${this.mmDwCssName()} {
+${btnCss}
+}
+.${this.mmValCssName()} {
+${valCss}
+}
+
+.${this.ssUpCssName()} {
+${btnCss}
+}
+.${this.ssDwCssName()} {
+${btnCss}
+}
+.${this.ssValCssName()} {
+${valCss}
+}
+
+.${this.tblCssName()} button:hover {
+${HtmlMakerCommonCss.btnHoverCssText}
+border: 1px solid #b4b107;
+}
+`.trim();
+    }
+    enableEvents(onUp, onDown) {
+        if (this.ctlElem === null)
+            return false;
+        this.htmlMaker.enableTableEvents(this.ctlElem.className);
+        this.onUp = onUp;
+        this.onDown = onDown;
+        return true;
+    }
+    disableEvents() {
+        if (this.ctlElem === null)
+            return false;
+        this.htmlMaker.disableTableEvents(this.ctlElem.className);
+        return true;
+    }
+    dispose() {
+        super.dispose();
+        if (this.ctlElem !== null) {
+            const parentElem = this.ctlElem.parentElement;
+            parentElem?.removeChild(this.ctlElem);
+            this.ctlElem.remove();
+        }
+        this.disableEvents();
+        this.ctlElem = null;
+    }
+    setInit(init) {
+        init = Math.floor(init);
+        this.initHH = Math.floor(init / 3600);
+        this.initMM = Math.floor((init % 3600) / 60);
+        this.initSS = init % 60;
+    }
+    onUpAction = async () => {
+    };
+    onDnAction = async () => {
+    };
+    update(hhDelta, mmDelta, ssDelta) {
+        let hhAdd = Number(this.hhElem.textContent) + hhDelta;
+        let mmAdd = Number(this.mmElem.textContent) + mmDelta;
+        let ssAdd = Number(this.ssElem.textContent) + ssDelta;
+        if (hhAdd >= 24)
+            hhAdd = 0;
+        else if (hhAdd < 0)
+            hhAdd = 23;
+        if (mmAdd >= 60)
+            mmAdd = 0;
+        else if (mmAdd < 0)
+            mmAdd = 59;
+        if (ssAdd >= 60)
+            ssAdd = 0;
+        else if (ssAdd < 0)
+            ssAdd = 59;
+        const hh = String(hhAdd).padStart(2, '0');
+        const mm = String(mmAdd).padStart(2, '0');
+        const ss = String(ssAdd).padStart(2, '0');
+        const res = hh + `:` + mm + `:` + ss;
+        return [hh, mm, ss, res];
+    }
+    tblCssName() { return `${this.ctlName}-tbl`; }
+    hhUpCssName() { return `${this.ctlName}-hhUpBtn`; }
+    hhDwCssName() { return `${this.ctlName}-hhDwBtn`; }
+    hhValCssName() { return `${this.ctlName}-hhValues`; }
+    mmUpCssName() { return `${this.ctlName}-mmUpBtn`; }
+    mmDwCssName() { return `${this.ctlName}-mmDwBtn`; }
+    mmValCssName() { return `${this.ctlName}-mmValues`; }
+    ssUpCssName() { return `${this.ctlName}-ssUpBtn`; }
+    ssDwCssName() { return `${this.ctlName}-ssDwBtn`; }
+    ssValCssName() { return `${this.ctlName}-ssValues`; }
 }
 export class HtmlMakerChoiceItem {
     key = ``;
@@ -3300,7 +3635,7 @@ export class HtmlMakerGroupTable extends HtmlMakerCtlBase {
                 evCtl.callerName = evArgs.classify;
                 evCtl.result = evArgs.selectedValue;
                 await this.onSelect(evCtl);
-                if (evArgs.cancel)
+                if (evCtl.cancel)
                     return;
             }
             for (const pair of this.items) {
