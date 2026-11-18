@@ -1,4 +1,4 @@
-import { GameEnv, EvonaBools } from "./GameEnv.js";
+import { GameEnv, EvonaBools, EvonaActions } from "./GameEnv.js";
 import { EvonaTypes } from "./GameEnv.js";
 import { ClipboardHelper } from "./ClipboardHelper.js";
 import { bootstrapPlugins, initImportersLastUpdate } from "./SiteImporter.js";
@@ -38,30 +38,69 @@ import { mainAdmin } from "./mainAdmin.js";
 import { mainNormal, mainNormalInit, mainNormalInitToolTipMgr } from "./mainNormal.js";
 import { mainEditor } from "./mainResource.js";
 import { CharStatusClassifyTypes } from "./CharClass.js";
+import { DockSet } from "./DockLaucher.js";
+import { VideoPlay } from "./VideoPlayer.js";
 switch (env.admin) {
     case true:
         await mainAdmin(env);
         break;
     case false:
         if (isWebRunning) {
+            /*
             if (env.edit === CharStatusClassifyTypes.none) {
-                await mainNormalInitToolTipMgr();
-                await mainNormalInit(env, isLocal, canActivateApp);
+                await mainNormalInitToolTipMgr()
+                await mainNormalInit(env, isLocal, canActivateApp)
+    
                 switch (env.evonaType) {
-                    case EvonaTypes.Full:
-                        window.EVONA_CONFIG.demo = false;
-                        await mainNormal(env);
-                        break;
-                    case EvonaTypes.Limit:
-                        window.EVONA_CONFIG.demo = true;
-                        await mainNormal(env);
-                        break;
+                case EvonaTypes.Full:
+                    window.EVONA_CONFIG.demo = false
+                    await mainNormal(env)
+                    break
+                case EvonaTypes.Limit:
+                    window.EVONA_CONFIG.demo = true
+                    await mainNormal(env)
+                    break
                 }
             }
             else {
-                env.setEditorMode();
-                const title = env.setBrowserTitle();
-                await mainEditor(env);
+                env.setEditorMode()
+                const title = env.setBrowserTitle()
+                await mainEditor(env)
+            }
+            */
+            if (env.action === EvonaActions.None) {
+                if (env.edit === CharStatusClassifyTypes.none) {
+                    await mainNormalInitToolTipMgr();
+                    await mainNormalInit(env, isLocal, canActivateApp);
+                    switch (env.evonaType) {
+                        case EvonaTypes.Full:
+                            window.EVONA_CONFIG.demo = false;
+                            await mainNormal(env);
+                            break;
+                        case EvonaTypes.Limit:
+                            window.EVONA_CONFIG.demo = true;
+                            await mainNormal(env);
+                            break;
+                    }
+                }
+                else {
+                    env.setEditorMode();
+                    const title = env.setBrowserTitle();
+                    await mainEditor(env);
+                }
+            }
+            else {
+                const dockUI = new DockSet();
+                dockUI.env = env;
+                const video = new VideoPlay();
+                video.setup(env, dockUI);
+                const videoToolTip = await video.makeVideoCtlToolTip();
+                if (videoToolTip !== null) {
+                    dockUI.videoToolTip = videoToolTip; //ツールチップUI
+                    if (env.action === EvonaActions.VideoPlay) {
+                        dockUI.selectVideoPlay();
+                    }
+                }
             }
         }
         break;
